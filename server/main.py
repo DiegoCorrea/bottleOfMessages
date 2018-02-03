@@ -5,18 +5,8 @@ import os
 import json
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
+from config.server import WHO_AM_I
 sys.path.append('..')
-
-WHO_AM_I = None
-
-
-def startServerConfig(default_path='config/server.json'):
-    global WHO_AM_I
-    if os.path.exists(default_path):
-        with open(default_path, 'rt') as f:
-            WHO_AM_I = json.load(f)
-    else:
-        exit(1)
 
 
 def setup_logging(
@@ -42,7 +32,6 @@ def setup_logging(
 
 if __name__ == "__main__":
     os.system('cls||clear')
-    startServerConfig()
     setup_logging()
     logging.info('*************** Iniciando Aplicacao ***************')
     t = ThreadedServer(ServerService, port=WHO_AM_I['port'])

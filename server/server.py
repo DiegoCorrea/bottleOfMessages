@@ -14,6 +14,14 @@ sys.path.append('..')
 
 
 class ServerService(rpyc.Service):
+    def __init__():
+        pass
+
+    def exposed_live():
+        return {
+            'type': '@CONNECTED'
+        }
+
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
