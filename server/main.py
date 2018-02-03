@@ -1,10 +1,12 @@
 import logging
 import logging.config
-import rpyc
-import sys, os, json
-sys.path.append('..')
+import sys
+import os
+import json
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
+sys.path.append('..')
+
 
 def setup_logging(
     default_path='logs/logging.json',
@@ -29,7 +31,6 @@ def setup_logging(
 
 if __name__ == "__main__":
     os.system('cls||clear')
-    #logging.basicConfig(filename='log/server.log', filemode='w',level=logging.DEBUG)
     setup_logging()
     logging.info('*************** Iniciando Aplicacao ***************')
     t = ThreadedServer(ServerService, port=27000)
