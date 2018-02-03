@@ -7,6 +7,17 @@ from server import ServerService
 from rpyc.utils.server import ThreadedServer
 sys.path.append('..')
 
+WHO_AM_I = None
+
+
+def startServerConfig(default_path='config/server.json'):
+    global WHO_AM_I
+    if os.path.exists(default_path):
+        with open(default_path, 'rt') as f:
+            WHO_AM_I = json.load(f)
+    else:
+        exit(1)
+
 
 def setup_logging(
     default_path='logs/logging.json',
@@ -31,8 +42,9 @@ def setup_logging(
 
 if __name__ == "__main__":
     os.system('cls||clear')
+    startServerConfig()
     setup_logging()
     logging.info('*************** Iniciando Aplicacao ***************')
-    t = ThreadedServer(ServerService, port=27000)
+    t = ThreadedServer(ServerService, port=WHO_AM_I['port'])
     t.start()
     logging.info('*************** Finalizando Aplicacao ***************')
