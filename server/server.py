@@ -28,7 +28,7 @@ class ServerService(rpyc.Service):
     # # # # # # # # # # # #
 
     @classmethod  # this is an exposed method
-    def exposed_createUser(cls, name, email):
+    def exposed_createUser(self, name, email):
         logging.info('Start [Create User]')
         # Validate
         if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
@@ -65,7 +65,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_findUserByEmail(cls, email):
+    def exposed_findUserByEmail(self, email):
         logging.info('Start [FIND USER BY EMAIL]')
         user = UserController.findBy_email(email)
         if len(user) == 0:
@@ -84,7 +84,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_userLogin(cls, user_id):
+    def exposed_userLogin(self, user_id):
         logging.info('Start [User Login]')
         user = UserController.findBy_email(user_id)
         if len(user) == 0:
@@ -93,9 +93,9 @@ class ServerService(rpyc.Service):
                 'type': '@USER/NOTFOUND',
                 'payload': {}
             }
-        chatList = cls.exposed_getAllUserChats(user_id)
-        userGroups = cls.exposed_getAllUserGroups(user_id)
-        contactList = cls.exposed_getAllUserContacts(user_id)
+        chatList = self.exposed_getAllUserChats(user_id)
+        userGroups = self.exposed_getAllUserGroups(user_id)
+        contactList = self.exposed_getAllUserContacts(user_id)
         logging.info('Finish [User Login] - return: @USER/DATA')
         return {
             'type': '@USER/DATA',
@@ -114,7 +114,7 @@ class ServerService(rpyc.Service):
     # # # # # # # # # # # #
 
     @classmethod  # this is an exposed method
-    def exposed_createChat(cls, user_id, contact_id):
+    def exposed_createChat(self, user_id, contact_id):
         logging.info('Start [Create Chat]')
         contact = UserController.findBy_ID(contact_id)
         if len(contact) == 0 or len(UserController.findBy_ID(user_id)) == 0:
@@ -141,7 +141,7 @@ class ServerService(rpyc.Service):
                 'email': contact[0],
                 'name': contact[1],
                 'created_at': chat[3],
-                'messages': cls.exposed_getChatMessageHistory(
+                'messages': self.exposed_getChatMessageHistory(
                     user_id=user_id,
                     contact_id=contact[0]
                 )['payload']
@@ -149,7 +149,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_getAllUserChats(cls, user_id):
+    def exposed_getAllUserChats(self, user_id):
         logging.info('Start [All Chats]')
         userChatList = {}
         if len(UserController.findBy_ID(user_id)) == 0:
@@ -167,7 +167,7 @@ class ServerService(rpyc.Service):
                 'email': contact[0],
                 'name': contact[1],
                 'created_at': chat[3],
-                'messages': cls.exposed_getChatMessageHistory(
+                'messages': self.exposed_getChatMessageHistory(
                     user_id=user_id,
                     contact_id=contact[0]
                 )['payload']
@@ -185,7 +185,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_getChatMessageHistory(cls, user_id, contact_id):
+    def exposed_getChatMessageHistory(self, user_id, contact_id):
         logging.info('Start [CHAT MESSAGE HISTORY]')
         try:
             contact = UserController.findBy_ID(contact_id)
@@ -237,7 +237,7 @@ class ServerService(rpyc.Service):
             }
 
     @classmethod  # this is an exposed method
-    def exposed_sendChatMessage(cls, user_id, contact_id, message):
+    def exposed_sendChatMessage(self, user_id, contact_id, message):
         logging.info('Start [SEND MESSAGE USER]')
         if len(
             UserController.findBy_ID(
@@ -268,15 +268,15 @@ class ServerService(rpyc.Service):
             message=message
         )
         logging.info(
-            'Finish [SEND MESSAGE USER] - return: cls.exposed_chatMessageHistory(user_id, contact_id)'
+            'Finish [SEND MESSAGE USER] - return: self.exposed_chatMessageHistory(user_id, contact_id)'
         )
-        return cls.exposed_getChatMessageHistory(user_id, contact_id)
+        return self.exposed_getChatMessageHistory(user_id, contact_id)
     # # # # # # # # # #
     # GROUP Interface #
     # # # # # # # # # #
 
     @classmethod  # this is an exposed method
-    def exposed_createGroup(cls, user_id, group_name):
+    def exposed_createGroup(self, user_id, group_name):
         logging.info('Start [CREATE GROUP]')
         if len(UserController.findBy_ID(user_id=user_id)) == 0:
             logging.info('Finish [User All Groups] - return: @USER/NOTFOUND')
@@ -314,7 +314,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_getAllUserGroups(cls, user_id):
+    def exposed_getAllUserGroups(self, user_id):
         logging.info('Start [User All Groups]')
         if len(UserController.findBy_ID(user_id=user_id)) == 0:
             logging.info('Finish [User All Groups] - return: @USER/NOTFOUND')
@@ -337,7 +337,7 @@ class ServerService(rpyc.Service):
                 'name': group[1],
                 'join_at': userGroup[3],
                 'created_at': group[2],
-                'messages': cls.exposed_groupMessageHistory(
+                'messages': self.exposed_groupMessageHistory(
                     user_id=user_id,
                     group_id=userGroup[2]
                 )['payload']
@@ -349,7 +349,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_addUserToAGroup(cls, user_id, group_id):
+    def exposed_addUserToAGroup(self, user_id, group_id):
         logging.info('Start [Add User To a Group]')
         if len(UserController.findBy_ID(user_id=user_id)) == 0:
             logging.info(
@@ -369,7 +369,7 @@ class ServerService(rpyc.Service):
             }
         GroupController.addUser(user_id, group_id)
         logging.info(
-            'Finish [Add User To a Group] - return: cls.exposed_getAllUserGroups(user_id)'
+            'Finish [Add User To a Group] - return: self.exposed_getAllUserGroups(user_id)'
         )
         group = GroupController.findBy_ID(group_id=group_id)
         return {
@@ -379,7 +379,7 @@ class ServerService(rpyc.Service):
                 'name': group[1],
                 'join_at': group[2],
                 'created_at': group[2],
-                'messages': cls.exposed_groupMessageHistory(
+                'messages': self.exposed_groupMessageHistory(
                     user_id=user_id,
                     group_id=group_id
                 )['payload']
@@ -387,7 +387,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_groupMessageHistory(cls, user_id, group_id):
+    def exposed_groupMessageHistory(self, user_id, group_id):
         logging.info('Start [GROUP MESSAGE HISTORY]')
         try:
             messageHistory = {}
@@ -434,7 +434,7 @@ class ServerService(rpyc.Service):
             }
 
     @classmethod  # this is an exposed method
-    def exposed_sendGroupMessage(cls, user_id, group_id, message):
+    def exposed_sendGroupMessage(self, user_id, group_id, message):
         logging.info('Start [SEND GROUP MESSAGE]')
         group = GroupController.findBy_ID(group_id=group_id)
         if len(group) == 0:
@@ -451,15 +451,15 @@ class ServerService(rpyc.Service):
             message=message
         )
         logging.info(
-            'Finish [SEND GROUP MESSAGE] - return: cls.exposed_groupMessageHistory(user_id, group_id)'
+            'Finish [SEND GROUP MESSAGE] - return: self.exposed_groupMessageHistory(user_id, group_id)'
         )
-        return cls.exposed_groupMessageHistory(user_id, group_id)
+        return self.exposed_groupMessageHistory(user_id, group_id)
     # # # # # # # # # # # #
     # CONTACT Interface   #
     # # # # # # # # # # # #
 
     @classmethod  # this is an exposed method
-    def exposed_addContact(cls, user_id, contact_id):
+    def exposed_addContact(self, user_id, contact_id):
         logging.info('Start [Add Contact]')
         userData = UserController.findBy_ID(user_id=user_id)
         contactData = UserController.findBy_ID(user_id=contact_id)
@@ -496,7 +496,7 @@ class ServerService(rpyc.Service):
         }
 
     @classmethod  # this is an exposed method
-    def exposed_getAllUserContacts(cls, user_id):
+    def exposed_getAllUserContacts(self, user_id):
         user = UserController.findBy_ID(user_id=user_id)
         if len(user) == 0:
             logging.info('Finish [User All Groups] - return: @USER/NOTFOUND')
