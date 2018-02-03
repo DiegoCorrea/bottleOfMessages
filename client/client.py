@@ -4,8 +4,8 @@ from time import sleep
 import rpyc
 import re
 import socket
-SERVER_IP = 'localhost'
-SERVER_PORT = 27000
+LIVE_STATUS = 'live'
+DEATH_STATUS = 'dinosaur'
 SERVERCONNECTION = None
 STORE = {
     'user': {},
@@ -17,14 +17,17 @@ CONFIG = {
     'connected': False,
     'servers': [
         {
+            'status': LIVE_STATUS,
             'name': 'Exu',
             'ip': '127.0.0.1',
             'port': 27000
         }, {
+            'status': LIVE_STATUS,
             'name': 'Thot',
             'ip': '127.0.0.1',
             'port': 27001
         }, {
+            'status': LIVE_STATUS,
             'name': 'Hermes',
             'ip': '127.0.0.1',
             'port': 27002
@@ -175,15 +178,16 @@ def exitProgramWithError():
 # #############################################################################
 
 
-def connectWithServer():
+def startConnectWithServers():
     global SERVERCONNECTION
     global CONFIG
     count = 0
     while CONFIG['connected'] is False:
+        server = CONFIG['servers'][count]
         try:
             SERVERCONNECTION = rpyc.connect(
-                SERVER_IP,
-                SERVER_PORT,
+                server['ip'],
+                server['port'],
                 config={
                     'allow_public_attrs': True,
                     "allow_pickle": True
@@ -191,14 +195,13 @@ def connectWithServer():
             )
             CONFIG['connected'] = True
         except (socket.error, AttributeError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: '
-            print '\tIt\'s not possible connect with the server'
-            print '\tTry Again again!'
-            sleep(1)
+            CONFIG['servers'][count]['status'] = DEATH_STATUS
+            print '+ + + + + + + + + + [CONNECTION] + + + + + + + + + +'
+            print 'Server: ' + server['name']
+            print 'IP: ' + server['ip']
+            print 'Port:' + str(server['port'])
+            print 'Status: ' + server['status']
             count += 1
-            if count > 30:
-                exitProgramWithError()
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
@@ -585,7 +588,7 @@ def remoteaddContact(contact_id):
         )
         return data
     except (IndexError, socket.error, AttributeError, EOFError):
-        connectWithServer()
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -1003,7 +1006,7 @@ def loginConfirmation():
 if __name__ == "__main__":
     global STORE
     global CONFIG
-    connectWithServer()
+    startConnectWithServers()
     os.system('cls||clear')
     if CONFIG['connected'] is True:
         loginScreen()
