@@ -4,6 +4,7 @@ from time import sleep
 import rpyc
 import re
 import socket
+
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
 SERVERCONNECTION = None
