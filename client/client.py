@@ -122,7 +122,7 @@ def waitEnter():
 def printScreenHeader():
     global STORE
     os.system('cls||clear')
-    print ('##################################################')
+    print ('# ############################################## #')
     print (
         '# Session: ( '
         + STORE['user']['name']
@@ -130,7 +130,7 @@ def printScreenHeader():
         + STORE['user']['email']
         + ' )'
     )
-    print ('##################################################')
+    print ('# ############################################## #')
 
 
 def printErrorMessage(error):
@@ -256,7 +256,7 @@ def printAllGroups():
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('+ + + + [Message] -> No groups added')
-        print('##################################################')
+        print('# ############################################## #')
 
 
 def screenPrintAllGroups():
@@ -381,7 +381,7 @@ def printGroupMessages(group_id):
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: No messages yet')
-        print('##################################################')
+        print('# ############################################## #')
 
 
 def remoteSendGroupMessage(group_id, message):
@@ -545,7 +545,7 @@ def printAllContacts():
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: No contacts yet')
-        print('##################################################')
+        print('# ############################################## #')
 
 
 def screenPrintAllContacts():
@@ -703,7 +703,7 @@ def printChatMessages(contact_id):
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: No messages yet!')
-        print('##################################################')
+        print('# ############################################## #')
 
 
 def remoteSendChatMessage(contact_id, message):
@@ -829,7 +829,7 @@ def printAllChats():
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: You have not chat yet')
-    print('##################################################')
+    print('# ############################################## #')
 
 
 def screenPrintAllChats():
