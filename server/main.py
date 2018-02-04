@@ -6,6 +6,7 @@ import json
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I
+
 sys.path.append('..')
 
 

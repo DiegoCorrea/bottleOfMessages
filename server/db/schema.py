@@ -1,8 +1,18 @@
 import sqlite3
 import os
 import inspect
+from config.server import WHO_AM_I
+
 # conectando...
-conn = sqlite3.connect(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '/whatsApp.db')
+conn = sqlite3.connect(
+    os.path.dirname(
+        os.path.abspath(
+            inspect.getfile(
+                inspect.currentframe()
+            )
+        )
+    ) + str(WHO_AM_I['db-name'])
+)
 # definindo um cursor
 cursor = conn.cursor()
 
