@@ -15,10 +15,10 @@ from config.server import SERVERS_LIST, LIVE_STATUS, DEATH_STATUS
 
 sys.path.append('..')
 CONNECTION_COUNT = 0
+HIGH_LIST = []
 
 
 class ServerService(rpyc.Service):
-    high_list = []
 
     def __init__(self, a):
         global CONNECTION_COUNT
@@ -28,7 +28,7 @@ class ServerService(rpyc.Service):
         logging.info('Connection count: ' + str(CONNECTION_COUNT))
 
     def checkServers(self):
-        del self.high_list[:]
+        del HIGH_LIST[:]
         SERVERCONNECTION = None
         for server in SERVERS_LIST:
             try:
@@ -37,7 +37,7 @@ class ServerService(rpyc.Service):
                     server['port']
                 )
                 server['status'] = LIVE_STATUS
-                self.high_list.append(server)
+                HIGH_LIST.append(server)
                 SERVERCONNECTION.close()
             except(socket.error, AttributeError, EOFError):
                 server['status'] = DEATH_STATUS
@@ -64,6 +64,38 @@ class ServerService(rpyc.Service):
     # # # # # # # # # # # #
     #    USER Interface   #
     # # # # # # # # # # # #
+
+    @classmethod
+    def exposed_serverReplaceCreateUser(self, name, email):
+        UserController.create(email=email, name=name)
+
+    @classmethod
+    def replaceCreateUser(self, name, email):
+        global HIGH_LIST
+        SERVERCONNECTION = None
+        for server in HIGH_LIST:
+            if server['status'] == DEATH_STATUS:
+                continue
+            try:
+                SERVERCONNECTION = rpyc.connect(
+                    server['ip'],
+                    server['port']
+                )
+                logging.info("[Replace Create User] - " + str(server['name']))
+                SERVERCONNECTION.root.serverReplaceCreateUser(
+                    name=name,
+                    email=email
+                )
+                SERVERCONNECTION.close()
+            except(socket.error, AttributeError, EOFError):
+                server['status'] = DEATH_STATUS
+                logging.info(
+                    '+ + + + + + + + + + [CONNECTION] + + + + + + + + + +'
+                )
+                logging.info('Server: ' + server['name'])
+                logging.info('IP: ' + server['ip'])
+                logging.info('Port:' + str(server['port']))
+                logging.info('Status: ' + server['status'])
 
     @classmethod  # this is an exposed method
     def exposed_createUser(self, name, email):
@@ -94,6 +126,7 @@ class ServerService(rpyc.Service):
         user = UserController.findBy_email(email=email)
         # Return
         logging.info('Finish [Create User] - return: @USER/DATA')
+        self.replaceCreateUser(name=name, email=email)
         return {
             'type': '@USER/DATA',
             'payload': {
