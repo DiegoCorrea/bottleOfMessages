@@ -11,7 +11,7 @@ conn = sqlite3.connect(
                 inspect.currentframe()
             )
         )
-    ) + str(WHO_AM_I['db-name'])
+    ) + '/db/' + str(WHO_AM_I['db-name'])
 )
 # definindo um cursor
 cursor = conn.cursor()
