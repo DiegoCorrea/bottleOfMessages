@@ -82,10 +82,7 @@ class ServerService(rpyc.Service):
                     server['port']
                 )
                 logging.info("[Replace Create User] - " + str(server['name']))
-                SERVERCONNECTION.root.serverReplaceCreateUser(
-                    name=name,
-                    email=email
-                )
+                SERVERCONNECTION.root.serverReplaceCreateUser(name, email)
                 SERVERCONNECTION.close()
             except(socket.error, AttributeError, EOFError):
                 server['status'] = DEATH_STATUS
@@ -126,7 +123,7 @@ class ServerService(rpyc.Service):
         user = UserController.findBy_email(email=email)
         # Return
         logging.info('Finish [Create User] - return: @USER/DATA')
-        self.replaceCreateUser(name=name, email=email)
+        self.replaceCreateUser(name=str(name), email=str(email))
         return {
             'type': '@USER/DATA',
             'payload': {
