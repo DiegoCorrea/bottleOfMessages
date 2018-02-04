@@ -61,16 +61,16 @@ class ServerService(rpyc.Service):
         # code that runs when the connection has already closed
         # (to finalize the service, if needed)
         pass
-    # # # # # # # # # # # #
-    #    USER Interface   #
-    # # # # # # # # # # # #
+# ########################################################################## #
+# ########################################################################## #
+# ########################################################################## #
 
     @classmethod
     def exposed_serverReplaceCreateUser(self, name, email):
         UserController.create(email=email, name=name)
 
     @classmethod
-    def replaceCreateUser(self, name, email):
+    def broadcast_replaceCreateUser(self, name, email):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
@@ -123,7 +123,7 @@ class ServerService(rpyc.Service):
         user = UserController.findBy_email(email=email)
         # Return
         logging.info('Finish [Create User] - return: @USER/DATA')
-        self.replaceCreateUser(name=str(name), email=str(email))
+        self.broadcast_replaceCreateUser(name=str(name), email=str(email))
         return {
             'type': '@USER/DATA',
             'payload': {
@@ -131,6 +131,7 @@ class ServerService(rpyc.Service):
                 'name': user[1]
             }
         }
+# ########################################################################## #
 
     @classmethod  # this is an exposed method
     def exposed_findUserByEmail(self, email):
@@ -150,6 +151,7 @@ class ServerService(rpyc.Service):
                 'name': user[1]
             }
         }
+# ########################################################################## #
 
     @classmethod  # this is an exposed method
     def exposed_userLogin(self, user_id):
@@ -177,9 +179,43 @@ class ServerService(rpyc.Service):
                 'groups': userGroups['payload']
             }
         }
-    # # # # # # # # # # # #
-    # USER CHAT Interface #
-    # # # # # # # # # # # #
+# ########################################################################## #
+
+# ########################################################################## #
+# ########################################################################## #
+# ########################################################################## #
+
+    @classmethod
+    def exposed_serverReplaceCreateChat(self, user_id, contact_id):
+        ChatController.createChat(user_id=user_id, contact_id=contact_id)
+
+    @classmethod
+    def broadcast_replaceCreateChat(self, name, email):
+        global HIGH_LIST
+        SERVERCONNECTION = None
+        for server in HIGH_LIST:
+            if server['status'] == DEATH_STATUS:
+                continue
+            try:
+                SERVERCONNECTION = rpyc.connect(
+                    server['ip'],
+                    server['port']
+                )
+                logging.info(
+                    "[Replace Create Chat] - Send to -> "
+                    + str(server['name'])
+                )
+                SERVERCONNECTION.root.serverReplaceCreateChat(name, email)
+                SERVERCONNECTION.close()
+            except(socket.error, AttributeError, EOFError):
+                server['status'] = DEATH_STATUS
+                logging.info(
+                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
+                )
+                logging.info('Server: ' + server['name'])
+                logging.info('IP: ' + server['ip'])
+                logging.info('Port:' + str(server['port']))
+                logging.info('Status: ' + server['status'])
 
     @classmethod  # this is an exposed method
     def exposed_createChat(self, user_id, contact_id):
@@ -202,6 +238,7 @@ class ServerService(rpyc.Service):
                 contact_id=contact_id
             )
         logging.info('Finish [Create Chat] - return: @CHAT/DATA')
+        self.broadcast_replaceCreateChat(user_id, contact_id)
         return {
             'type': '@CHAT/DATA',
             'payload': {
@@ -215,6 +252,7 @@ class ServerService(rpyc.Service):
                 )['payload']
             }
         }
+# ########################################################################## #
 
     @classmethod  # this is an exposed method
     def exposed_getAllUserChats(self, user_id):
@@ -251,6 +289,7 @@ class ServerService(rpyc.Service):
             'type': '@CHAT/DATA',
             'payload': userChatList
         }
+# ########################################################################## #
 
     @classmethod  # this is an exposed method
     def exposed_getChatMessageHistory(self, user_id, contact_id):
@@ -303,6 +342,7 @@ class ServerService(rpyc.Service):
                 'type': '@SERVER/ERROR',
                 'payload': {}
             }
+# ########################################################################## #
 
     @classmethod  # this is an exposed method
     def exposed_sendChatMessage(self, user_id, contact_id, message):
@@ -339,6 +379,12 @@ class ServerService(rpyc.Service):
             'Finish [SEND MESSAGE USER] - return: self.exposed_chatMessageHistory(user_id, contact_id)'
         )
         return self.exposed_getChatMessageHistory(user_id, contact_id)
+# ########################################################################## #
+
+# ########################################################################## #
+# ########################################################################## #
+# ########################################################################## #
+
     # # # # # # # # # #
     # GROUP Interface #
     # # # # # # # # # #
