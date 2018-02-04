@@ -6,7 +6,7 @@ from config.server import WHO_AM_I
 
 
 def createChat(user_id, contact_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO chats (id, user_id, contact_id, created_at)
@@ -17,7 +17,7 @@ def createChat(user_id, contact_id):
 
 
 def allUserChat(user_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chats
@@ -34,7 +34,7 @@ def allUserChat(user_id):
 
 
 def getChatWith(user_id, contact_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chats
@@ -48,7 +48,7 @@ def getChatWith(user_id, contact_id):
 
 
 def getMessages(chat_id, limit=20):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chat_messages
@@ -66,7 +66,7 @@ def getMessages(chat_id, limit=20):
 
 
 def sendMessage(chat_id, sender_id, message):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO chat_messages (chat_id, sender_id, message, created_at)

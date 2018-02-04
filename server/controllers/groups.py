@@ -1,9 +1,12 @@
-import sqlite3, uuid
+import sqlite3
+import uuid
 from time import gmtime, strftime
+from config.server import WHO_AM_I
+
 
 def create(group_name):
     group_id = str(uuid.uuid4())[:8]
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO groups (id, name, created_at)
@@ -13,7 +16,7 @@ def create(group_name):
     conn.close()
     return group_id
 def findBy_ID(group_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM groups
@@ -26,7 +29,7 @@ def findBy_ID(group_id):
     return data
 
 def allUsers(group_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM user_groups
@@ -42,7 +45,7 @@ def allUsers(group_id):
     return data
 
 def userGroups(user_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM user_groups
@@ -58,7 +61,7 @@ def userGroups(user_id):
     return data
 
 def addUser(user_id, group_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO user_groups (user_id, group_id, created_at)
@@ -68,7 +71,7 @@ def addUser(user_id, group_id):
     conn.close()
 
 def getMessages(group_id, limit=20):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM group_messages
@@ -85,7 +88,7 @@ def getMessages(group_id, limit=20):
     return data
 
 def sendMessage(group_id, sender_id, message):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO group_messages (group_id, sender_id, message, created_at)

@@ -2,9 +2,11 @@ import sqlite3
 import sys
 sys.path.append('..')
 from time import gmtime, strftime
+from config.server import WHO_AM_I
+
 
 def create(user_id, contact_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO contacts (user_id, contact_id, created_at)
@@ -14,7 +16,7 @@ def create(user_id, contact_id):
     conn.close()
 
 def all(user_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM contacts
@@ -30,7 +32,7 @@ def all(user_id):
     return data
 
 def findBy_ID(user_id, contact_id):
-    conn = sqlite3.connect('./db/whatsApp.db')
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM contacts
