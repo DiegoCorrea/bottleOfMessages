@@ -10,14 +10,13 @@ WHO_AM_I = {
 
 SERVERS_LIST = [
     {
+        'status': '',
         "name": "Hermes",
-        'status': LIVE_STATUS,
         "db-name": 'Hermes.db',
         "ip": "127.0.0.1",
         "port": 27000
-
     }, {
-        'status': LIVE_STATUS,
+        'status': '',
         'name': 'Exu',
         "db-name": "Exu.db",
         'ip': '127.0.0.1',

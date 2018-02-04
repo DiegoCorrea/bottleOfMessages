@@ -6,7 +6,7 @@ import rpyc
 import re
 import socket
 
-
+rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
 SERVERCONNECTION = None
@@ -21,7 +21,7 @@ CONFIG = {
     'servers': [
         {
             'status': '',
-            'name': 'Exu',
+            'name': 'Hermes',
             'ip': '127.0.0.1',
             'port': 27000
         }, {
@@ -31,7 +31,7 @@ CONFIG = {
             'port': 27001
         }, {
             'status': '',
-            'name': 'Hermes',
+            'name': 'Exu',
             'ip': '127.0.0.1',
             'port': 27002
         }

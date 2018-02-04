@@ -5,29 +5,62 @@ import re
 import socket
 import logging
 import collections
+import copy
 
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-from config.server import SERVERS_LIST, LIVE_STATUS, DEATH_STATUS
+from config.server import SERVERS_LIST, LIVE_STATUS, DEATH_STATUS, WHO_AM_I
 
+rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 sys.path.append('..')
 CONNECTION_COUNT = 0
 HIGH_LIST = []
+FIRST_TIME = True
 
 
 class ServerService(rpyc.Service):
 
-    def __init__(self, a):
+    def __init__(self, how):
         global CONNECTION_COUNT
+        global FIRST_TIME
         if CONNECTION_COUNT % 10 == 0:
             self.checkServers()
-        CONNECTION_COUNT += 1
-        logging.info('Connection count: ' + str(CONNECTION_COUNT))
+        if FIRST_TIME is True:
+            self.requireToEnter()
+            FIRST_TIME = False
+
+    def requireToEnter(self):
+        global HIGH_LIST
+        SERVERCONNECTION = None
+        for server in HIGH_LIST:
+            try:
+                SERVERCONNECTION = rpyc.connect(
+                    server['ip'],
+                    server['port']
+                )
+                logging.debug("[Require To Enter] - " + str(server['name']))
+                SERVERCONNECTION.root.letMeEnter(WHO_AM_I)
+                SERVERCONNECTION.close()
+            except(socket.error, AttributeError, EOFError):
+                server['status'] = DEATH_STATUS
+                logging.error(
+                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
+                )
+                logging.error('Server: ' + server['name'])
+                logging.error('IP: ' + server['ip'])
+                logging.error('Port:' + str(server['port']))
+                logging.error('Status: ' + server['status'])
+
+    def exposed_letMeEnter(self, newService):
+        global HIGH_LIST
+        HIGH_LIST.append(copy.deepcopy(newService))
+        logging.debug("[Let Me Enter] - New Service" + str(newService['name']))
 
     def checkServers(self):
+        global HIGH_LIST
         del HIGH_LIST[:]
         SERVERCONNECTION = None
         for server in SERVERS_LIST:
@@ -42,7 +75,7 @@ class ServerService(rpyc.Service):
             except(socket.error, AttributeError, EOFError):
                 server['status'] = DEATH_STATUS
                 logging.error(
-                    '+ + + + + + + + + + [CONNECTION] + + + + + + + + + +'
+                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
                 )
                 logging.error('Server: ' + server['name'])
                 logging.error('IP: ' + server['ip'])
@@ -55,6 +88,9 @@ class ServerService(rpyc.Service):
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
+        global CONNECTION_COUNT
+        CONNECTION_COUNT += 1
+        logging.debug('Connection count: ' + str(CONNECTION_COUNT))
         pass
 
     def on_disconnect(self):
@@ -74,8 +110,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -194,8 +228,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -376,8 +408,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -456,8 +486,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -568,8 +596,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -698,8 +724,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -765,8 +789,6 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         SERVERCONNECTION = None
         for server in HIGH_LIST:
-            if server['status'] == DEATH_STATUS:
-                continue
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
