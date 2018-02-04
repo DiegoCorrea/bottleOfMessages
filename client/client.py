@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-import os
+from __future__ import print_function
 from time import sleep
+import os
 import rpyc
 import re
 import socket
+
 
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
@@ -18,17 +20,17 @@ CONFIG = {
     'connected': False,
     'servers': [
         {
-            'status': LIVE_STATUS,
+            'status': '',
             'name': 'Exu',
             'ip': '127.0.0.1',
             'port': 27000
         }, {
-            'status': LIVE_STATUS,
+            'status': '',
             'name': 'Thot',
             'ip': '127.0.0.1',
             'port': 27001
         }, {
-            'status': LIVE_STATUS,
+            'status': '',
             'name': 'Hermes',
             'ip': '127.0.0.1',
             'port': 27002
@@ -51,8 +53,8 @@ def readGroupIDFromKey():
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
+            print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print ('\tMessage: Wrong Input, try again!')
             inText = ''
     return inText
 
@@ -65,8 +67,8 @@ def readNameFromKey():
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
+            print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print ('\tMessage: Wrong Input, try again!')
             inText = ''
     return inText
 
@@ -77,14 +79,14 @@ def readEmailFromKey():
         try:
             inText = raw_input("Email: ")
             if re.match(r"[^@]+@[^@]+\.[^@]+", inText) is None:
-                print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-                print '\tMessage: Please type a valid email address'
+                print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+                print ('\tMessage: Please type a valid email address')
                 inText == ''
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
+            print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print ('\tMessage: Wrong Input, try again!')
             inText = ''
     return inText
 
@@ -96,8 +98,8 @@ def readMenuChoiceFromKey():
     except KeyboardInterrupt:
         exitProgramWithSuccess()
     except (NameError, SyntaxError):
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Wrong Input, try again!'
+        print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print ('\tMessage: Wrong Input, try again!')
         waitEnter()
         return 10
 
@@ -112,21 +114,23 @@ def waitEnter():
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
+            print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print ('\tMessage: Wrong Input, try again!')
             inText = 'a'
 
 
 def printScreenHeader():
     global STORE
     os.system('cls||clear')
-    print '##################################################'
-    print '# Session: ( ',
-    STORE['user']['name'],
-    ' - ',
-    STORE['user']['email'],
-    ' )'
-    print '##################################################'
+    print ('##################################################')
+    print (
+        '# Session: ( '
+        + STORE['user']['name'],
+        + ' - '
+        + STORE['user']['email']
+        + ' )'
+    )
+    print ('##################################################')
 
 
 def printErrorMessage(error):
@@ -143,10 +147,10 @@ def exitProgramWithSuccess():
     global SERVERCONNECTION
     try:
         SERVERCONNECTION.close()
-        print('#################################')
-        print '|\tBottle of Messages Burn!\t\t|'
-        print '|\tTchuss!\t\t\t|'
-        print('#################################')
+        print ('#################################')
+        print ('|\tBottle of Messages Drop on the Sea!\t\t|')
+        print ('|\tTchuss!\t\t\t|')
+        print ('#################################')
         exit()
     except (IndexError, socket.error, EOFError, AttributeError):
         exitProgramWithError()
@@ -158,32 +162,32 @@ def exitProgramWithError():
     try:
         SERVERCONNECTION.close()
         print('#################################')
-        print '|\tBottle of Messages Burn!\t\t|'
-        print '|\tTchuss!\t\t\t|'
+        print('|\tBottle of Messages Burn!\t\t|')
+        print('|\tTchuss!\t\t\t|')
         print('#################################')
     except (IndexError, socket.error, EOFError):
         print('#################################')
-        print '|\tA Error is raised!\t|'
-        print '|\tTchuss!\t\t\t|'
+        print('|\tA Error is raised!\t|')
+        print('|\tTchuss!\t\t\t|')
         print('#################################')
     except AttributeError:
         print('#################################')
-        print '|\tCant close the comunication!\t|'
-        print '|\tTchuss!\t\t\t|'
+        print('|\tCant close the comunication!\t|')
+        print('|\tTchuss!\t\t\t|')
         print('#################################')
     exit()
-# #############################################################################
-# #############################################################################
-# ######################## Server Connection Functions ########################
-# #############################################################################
-# #############################################################################
+# ########################################################################### #
+# ########################################################################### #
+# ######################## Server Connection Functions ###################### #
+# ########################################################################### #
+# ########################################################################### #
 
 
 def startConnectWithServers():
     global SERVERCONNECTION
     global CONFIG
     count = 0
-    while CONFIG['connected'] is False:
+    while (CONFIG['connected'] is False):
         server = CONFIG['servers'][count]
         try:
             SERVERCONNECTION = rpyc.connect(
@@ -195,14 +199,25 @@ def startConnectWithServers():
                 }
             )
             CONFIG['connected'] = True
+            print ('+ + + + + + + + + [CONNECTION SUCCESS] + + + + + + + + +')
+            print ('Server: ' + server['name'])
+            print ('Status: ' + server['status'])
+            print ('IP: ' + server['ip'])
+            print ('Port:' + str(server['port']))
+            print ("\n\nLoad the program")
+            sleep(3)
         except (socket.error, AttributeError):
             CONFIG['servers'][count]['status'] = DEATH_STATUS
-            print '+ + + + + + + + + + [CONNECTION] + + + + + + + + + +'
-            print 'Server: ' + server['name']
-            print 'IP: ' + server['ip']
-            print 'Port:' + str(server['port'])
-            print 'Status: ' + server['status']
+            print ('+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +')
+            print ('Server: ' + server['name'])
+            print ('Status: ' + server['status'])
+            print ('IP: ' + server['ip'])
+            print ('Port:' + str(server['port']))
             count += 1
+            print ("Try again in ", end='\r')
+            for i in range(5):
+                print (str(5-i) + "...")
+                sleep(1)
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
@@ -226,8 +241,8 @@ def remoteGetAllUserGroups():
 def getAllUserGroups():
     data = remoteGetAllUserGroups()
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == '@GROUP/DATA':
         STORE['groups'] = data['payload']
@@ -235,12 +250,12 @@ def getAllUserGroups():
 
 
 def printGroup(data):
-    print '--------------------------------------------------'
-    print '+ Code:', data['id']
-    print '+ Name:', data['name']
-    print '+ Join at:', data['join_at']
-    print '+ Since at:', data['created_at']
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('+ Code:', data['id'])
+    print('+ Name:', data['name'])
+    print('+ Join at:', data['join_at'])
+    print('+ Since at:', data['created_at'])
+    print('--------------------------------------------------')
 
 
 def printAllGroups():
@@ -249,15 +264,15 @@ def printAllGroups():
         for group_id in STORE['groups']:
             printGroup(STORE['groups'][group_id])
     else:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '+ + + + [Message] -> No groups added'
-        print '##################################################'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('+ + + + [Message] -> No groups added')
+        print('##################################################')
 
 
 def screenPrintAllGroups():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '=================== Group List ==================='
+    print('--------------------------------------------------')
+    print('=================== Group List ===================')
     printAllGroups()
 # #############################################################################
 
@@ -282,16 +297,16 @@ def addUserToAGroup(group_id):
     global STORE
     data = remoteAddUserToAGroup(group_id=group_id)
     if data['type'] == '@GROUP/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Group not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Group not found')
         return ''
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: ', data['payload']['message']
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: ', data['payload']['message'])
         return ''
     if data['type'] == '@GROUP/DATA':
         STORE['groups'][data['payload']['id']] = data['payload']
@@ -300,9 +315,9 @@ def addUserToAGroup(group_id):
 
 def screenAddUserToAGroup():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '================== Join a Group =================='
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('================== Join a Group ==================')
+    print('--------------------------------------------------')
     payload = addUserToAGroup(group_id=readGroupIDFromKey())
     if len(payload) > 0:
         printGroup(payload)
@@ -328,33 +343,33 @@ def createGroup(group_name):
         global STORE
         data = remoteCreateGroup(group_name)
         if data['type'] == '@VALIDATION/SMALL_NAME':
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Name to small'
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: Name to small')
             return ''
         if data['type'] == '@GROUP/CANT_CREATE':
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Cant Create the group'
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: Cant Create the group')
             return ''
         if data['type'] == '@USER/NOTFOUND':
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: User not found'
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: User not found')
             return ''
         if data['type'] == 'ERROR/CONNECTION':
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Connection Error!'
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: Connection Error!')
             return ''
         if data['type'] == '@GROUP/DATA':
             STORE['groups'][data['payload']['id']] = data['payload']
             return data['payload']
     except AttributeError, e:
-        print 'Algo de errado ocorreu: ', e
+        print('Algo de errado ocorreu: ', e)
 
 
 def screenCreateGroup():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '================= Create a Group ================='
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('================= Create a Group =================')
+    print('--------------------------------------------------')
     payload = createGroup(readNameFromKey())
     if len(payload) > 0:
         printGroup(payload)
@@ -365,16 +380,18 @@ def printGroupMessages(group_id):
     printGroup(STORE['groups'][group_id])
     if len(STORE['groups'][group_id]['messages']) > 0:
         for message in STORE['groups'][group_id]['messages']:
-            print 'De: ',
-            STORE['groups'][group_id]['messages'][message]['sender_id'],
-            ' ',
-            STORE['groups'][group_id]['messages'][message]['created_at']
-            print STORE['groups'][group_id]['messages'][message]['message']
-            print '--------------------------------------------------'
+            print (
+                'De: '
+                + STORE['groups'][group_id]['messages'][message]['sender_id']
+                + ' '
+                + STORE['groups'][group_id]['messages'][message]['created_at']
+            )
+            print(STORE['groups'][group_id]['messages'][message]['message'])
+            print('--------------------------------------------------')
     else:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No messages yet'
-        print '##################################################'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No messages yet')
+        print('##################################################')
 
 
 def remoteSendGroupMessage(group_id, message):
@@ -396,24 +413,24 @@ def sendGroupMessege(group_id, message):
     global STORE
     data = remoteSendGroupMessage(group_id, message)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found!')
         return ''
     if data['type'] == '@GROUP/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Group not found!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Group not found!')
         return ''
     if data['type'] == '@GROUP/MESSAGE/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No message yet!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No message yet!')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@SERVER/ERROR':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Server Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Server Error!')
         return ''
     if data['type'] == '@GROUP/MESSAGE/DATA':
         STORE['groups'][group_id]['messages'] = data['payload']
@@ -436,24 +453,24 @@ def remoteGetGroupMessages(group_id):
 def getGroupMessages(group_id):
     data = remoteGetGroupMessages(group_id)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found!')
         return ''
     if data['type'] == '@GROUP/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Group not found!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Group not found!')
         return ''
     if data['type'] == '@GROUP/MESSAGE/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No message yet!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No message yet!')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@SERVER/ERROR':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Server Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Server Error!')
         return ''
     if data['type'] == '@GROUP/MESSAGE/DATA':
         STORE['groups'][group_id]['messages'] = data['payload']
@@ -462,8 +479,8 @@ def getGroupMessages(group_id):
 def screenGroupChat():
     group_id = readGroupIDFromKey()
     if group_id not in STORE['groups']:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: You has no groupd added yet!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: You has no groupd added yet!')
         return ''
     text = ''
     while True:
@@ -471,10 +488,10 @@ def screenGroupChat():
             getGroupMessages(group_id)
             printScreenHeader()
             printGroupMessages(group_id)
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print "Commands:"
-            print "\t[:q] to exit"
-            print "\t[:u] to update chat"
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print("Commands:")
+            print("\t[:q] to exit")
+            print("\t[:u] to update chat")
             text = raw_input("Text:\n")
             if text == ':q':
                 return ''
@@ -485,9 +502,9 @@ def screenGroupChat():
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError), e:
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
-            print 'Error Message: ', e
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: Wrong Input, try again!')
+            print('Error Message: ', e)
             text = ''
             waitEnter()
 # #############################################################################
@@ -499,11 +516,11 @@ def screenGroup():
     while True:
         printScreenHeader()
         menuChoice = 10
-        print '1 - Create a Group'
-        print '2 - Enter in a Group'
-        print '3 - List All Your Groups'
-        print '4 - Open Group Chat'
-        print '0 - Back To Main Screen'
+        print('1 - Create a Group')
+        print('2 - Enter in a Group')
+        print('3 - List All Your Groups')
+        print('4 - Open Group Chat')
+        print('0 - Back To Main Screen')
         menuChoice = readMenuChoiceFromKey()
         if menuChoice == 1:
             screenCreateGroup()
@@ -524,11 +541,11 @@ def screenGroup():
 
 
 def printContact(data):
-    print '--------------------------------------------------'
-    print 'Name: ', data['name']
-    print 'Email: ', data['email']
-    print 'Added at: ', data['created_at']
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('Name: ', data['name'])
+    print('Email: ', data['email'])
+    print('Added at: ', data['created_at'])
+    print('--------------------------------------------------')
 
 
 def printAllContacts():
@@ -536,15 +553,15 @@ def printAllContacts():
         for contact in STORE['contacts']:
             printContact(STORE['contacts'][contact])
     else:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No contacts yet'
-        print '##################################################'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No contacts yet')
+        print('##################################################')
 
 
 def screenPrintAllContacts():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '================== All Contacts =================='
+    print('--------------------------------------------------')
+    print('================== All Contacts ==================')
     printAllContacts()
 # #############################################################################
 
@@ -565,16 +582,16 @@ def remoteGetAllUserContacts():
 def getAllContacts():
     data = remoteGetAllUserContacts()
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == '@USER/CONTACT/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No contacts'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No contacts')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@USER/CONTACT/DATA':
         STORE['contacts'] = data['payload']
@@ -599,16 +616,16 @@ def remoteaddContact(contact_id):
 def addContact(contact_id):
     data = remoteaddContact(contact_id=contact_id)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == '@CONTACT/ISALREADY':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Contact is already your friend.'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Contact is already your friend.')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@USER/CONTACT/DATA':
         STORE['contacts'][data['payload']['email']] = data['payload']
@@ -617,9 +634,9 @@ def addContact(contact_id):
 
 def screenAddContact():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '================= Add a Contact =================='
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('================= Add a Contact ==================')
+    print('--------------------------------------------------')
     payload = addContact(contact_id=readEmailFromKey())
     if len(payload) > 0:
         printContact(payload)
@@ -632,9 +649,9 @@ def screenContacts():
     global STORE
     while True:
         printScreenHeader()
-        print '1 - Add Contact'
-        print '2 - All Contacts'
-        print '0 - Back to main screen'
+        print('1 - Add Contact')
+        print('2 - All Contacts')
+        print('0 - Back to main screen')
         menuChoice = readMenuChoiceFromKey()
         if menuChoice == 1:
             screenAddContact()
@@ -668,12 +685,12 @@ def createChat(email):
     global STORE
     data = remoteCreateChat(contact_id=email)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@CHAT/DATA':
         STORE['chats'][data['payload']['id']] = data['payload']
@@ -685,16 +702,18 @@ def printChatMessages(contact_id):
     printChat(STORE['chats'][contact_id])
     if len(STORE['chats']) > 0 and len(STORE['chats'][contact_id]['messages']) > 0:
         for message in STORE['chats'][contact_id]['messages']:
-            print 'De: ',
-            STORE['chats'][contact_id]['messages'][message]['sender_id'],
-            ' ',
-            STORE['chats'][contact_id]['messages'][message]['created_at']
-            print STORE['chats'][contact_id]['messages'][message]['message']
-            print '--------------------------------------------------'
+            print (
+                'De: '
+                + STORE['chats'][contact_id]['messages'][message]['sender_id']
+                + ' '
+                + STORE['chats'][contact_id]['messages'][message]['created_at']
+            )
+            print(STORE['chats'][contact_id]['messages'][message]['message'])
+            print('--------------------------------------------------')
     else:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No messages yet!'
-        print '##################################################'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No messages yet!')
+        print('##################################################')
 
 
 def remoteSendChatMessage(contact_id, message):
@@ -716,16 +735,16 @@ def sendChatMessage(contact_id, message):
     global STORE
     data = remoteSendChatMessage(contact_id, message)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == '@CHAT/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No chat found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No chat found')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@CHAT/MESSAGE/DATA':
         STORE['chats'][contact_id] = data['payload']
@@ -749,24 +768,24 @@ def getChatMessages(contact_id):
     global STORE
     data = remoteGetChatMessages(contact_id)
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     if data['type'] == '@CHAT/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: CHAT not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: CHAT not found')
         return ''
     if data['type'] == '@CHAT/MESSAGE/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No message yet'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No message yet')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@SERVER/ERROR':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Server Error'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Server Error')
         return ''
     if data['type'] == '@CHAT/MESSAGE/DATA':
         STORE['chats'][contact_id] = data['payload']
@@ -782,10 +801,10 @@ def screenContactChat():
             getChatMessages(contact_id)
             printScreenHeader()
             printChatMessages(contact_id)
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print "Commands:"
-            print "\t[:q] to exit"
-            print "\t[:u] to update chat"
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print("Commands:")
+            print("\t[:q] to exit")
+            print("\t[:u] to update chat")
             text = raw_input("Text: \n")
             if text == ':q':
                 return ''
@@ -796,20 +815,20 @@ def screenContactChat():
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
-            print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-            print '\tMessage: Wrong Input, try again!'
+            print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+            print('\tMessage: Wrong Input, try again!')
             text = ''
             waitEnter()
 # #############################################################################
 
 
 def printChat(data):
-    print '--------------------------------------------------'
-    print '+ Chat With: ', data['name']
-    print '+ Email: ', data['email']
-    print '+ Since at: ', data['created_at']
-    print '+ Last update: '
-    print '--------------------------------------------------'
+    print('--------------------------------------------------')
+    print('+ Chat With: ', data['name'])
+    print('+ Email: ', data['email'])
+    print('+ Since at: ', data['created_at'])
+    print('+ Last update: ')
+    print('--------------------------------------------------')
 
 
 def printAllChats():
@@ -818,15 +837,15 @@ def printAllChats():
         for chat in STORE['chats']:
             printChat(STORE['chats'][chat])
     else:
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: You have not chat yet'
-    print '##################################################'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: You have not chat yet')
+    print('##################################################')
 
 
 def screenPrintAllChats():
     printScreenHeader()
-    print '--------------------------------------------------'
-    print '=================== Chat List ===================='
+    print('--------------------------------------------------')
+    print('=================== Chat List ====================')
     printAllChats()
 # #############################################################################
 
@@ -848,12 +867,12 @@ def getUserChats():
     global STORE
     data = remoteGetAllUserChats()
     if data['type'] == '@CHAT/ZERO':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: No chat found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No chat found')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@CHAT/DATA':
         STORE['chats'] = data['payload']
@@ -866,9 +885,9 @@ def screenUserChat():
     global STORE
     while True:
         printScreenHeader()
-        print '1 - All Chat'
-        print '2 - Open Chat'
-        print '0 - Back to main screen'
+        print('1 - All Chat')
+        print('2 - Open Chat')
+        print('0 - Back to main screen')
         menuChoice = readMenuChoiceFromKey()
         if menuChoice == 1:
             screenPrintAllChats()
@@ -914,7 +933,7 @@ def remoteLogOnSystem(email):
         data = SERVERCONNECTION.root.userLogin(user_id=email)
         return data
     except (IndexError, socket.error, AttributeError, EOFError), e:
-        print '+++ Erro: ', e
+        print('+++ Erro: ', e)
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -926,12 +945,12 @@ def logIn(email):
     data = {}
     data = remoteLogOnSystem(email=email)
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@USER/NOTFOUND':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: User not found'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: User not found')
         return ''
     STORE = data['payload']
     loginConfirmation()
@@ -949,27 +968,28 @@ def remoteCreateUser(email, name):
 
 
 def createAccount():
-    print ' ______________________'
-    print '|  Welcome Bottle of Messages      |'
-    print '|  Create new account  |'
+    print(' ______________________________________')
+    print('|    Welcome Bottle of Messages        |')
+    print('|        Create new account            |')
+    print(' --------------------------------------')
     email = readEmailFromKey()
     name = readNameFromKey()
     data = remoteCreateUser(email=email, name=name)
     if data['type'] == '@VALIDATION/NOT_EMAIL':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: It is not a valid email'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: It is not a valid email')
         return ''
     if data['type'] == '@VALIDATION/SMALL_NAME':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Name to small'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Name to small')
         return ''
     if data['type'] == '@VALIDATION/EXISTENT':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Choice another account id'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Choice another account id')
         return ''
     if data['type'] == 'ERROR/CONNECTION':
-        print '+ + + + + + + + + + [Messages] + + + + + + + + + +'
-        print '\tMessage: Connection Error!'
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: Connection Error!')
         return ''
     STORE['user'] = data['payload']
 
@@ -978,11 +998,11 @@ def loginScreen():
     menuChoice = 10
     while len(STORE['user']) == 0:
         os.system('cls||clear')
-        print '#########################'
-        print '# 1 - Login\t\t#'
-        print '# 2 - Join Us\t\t#'
-        print '# 0 - Exit Bottle of Messages\t#'
-        print '#########################'
+        print('# ################################################ #')
+        print('# 1 - Login')
+        print('# 2 - Join Us')
+        print('# 0 - Exit Bottle of Messages')
+        print('# ################################################ #')
         menuChoice = readMenuChoiceFromKey()
         if menuChoice == 1:
             logIn(readEmailFromKey())
@@ -998,10 +1018,11 @@ def loginConfirmation():
     printAllContacts()
     printAllGroups()
 
-# #############################################################################
-# #############################################################################
-# MAIN PROGRAM
-# #############################################################################
+# ########################################################################### #
+# ########################################################################### #
+# ############################ MAIN PROGRAM ################################# #
+# ########################################################################### #
+# ########################################################################### #
 
 
 if __name__ == "__main__":
