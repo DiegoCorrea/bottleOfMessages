@@ -1,8 +1,10 @@
 import sqlite3
 import sys
-sys.path.append('..')
+
 from time import gmtime, strftime
 from config.server import WHO_AM_I
+
+sys.path.append('..')
 
 
 def create(user_id, contact_id):
@@ -14,6 +16,7 @@ def create(user_id, contact_id):
     """, (user_id, contact_id, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
     conn.commit()
     conn.close()
+
 
 def all(user_id):
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
@@ -30,6 +33,7 @@ def all(user_id):
     for linha in itens:
         data.append(linha)
     return data
+
 
 def findBy_ID(user_id, contact_id):
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
