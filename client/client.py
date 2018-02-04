@@ -144,7 +144,7 @@ def exitProgramWithSuccess():
     try:
         SERVERCONNECTION.close()
         print('#################################')
-        print '|\tBroZap Burn!\t\t|'
+        print '|\tBottle of Messages Burn!\t\t|'
         print '|\tTchuss!\t\t\t|'
         print('#################################')
         exit()
@@ -158,7 +158,7 @@ def exitProgramWithError():
     try:
         SERVERCONNECTION.close()
         print('#################################')
-        print '|\tBroZap Burn!\t\t|'
+        print '|\tBottle of Messages Burn!\t\t|'
         print '|\tTchuss!\t\t\t|'
         print('#################################')
     except (IndexError, socket.error, EOFError):
