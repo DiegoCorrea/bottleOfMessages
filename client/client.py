@@ -125,7 +125,7 @@ def printScreenHeader():
     print ('##################################################')
     print (
         '# Session: ( '
-        + STORE['user']['name'],
+        + STORE['user']['name']
         + ' - '
         + STORE['user']['email']
         + ' )'
@@ -147,34 +147,21 @@ def exitProgramWithSuccess():
     global SERVERCONNECTION
     try:
         SERVERCONNECTION.close()
-        print ('#################################')
-        print ('|\tBottle of Messages Drop on the Sea!\t\t|')
-        print ('|\tTchuss!\t\t\t|')
-        print ('#################################')
+        print('# ################################### #')
+        print('# Bottle of Messages Drop on the Sea! #')
+        print('#\tTchuss!\t\t\t      #')
+        print('# ################################### #')
         exit()
     except (IndexError, socket.error, EOFError, AttributeError):
         exitProgramWithError()
 
 
-def exitProgramWithError():
+def exitProgramWithError(errorKey):
     os.system('cls||clear')
-    global SERVERCONNECTION
-    try:
-        SERVERCONNECTION.close()
-        print('#################################')
-        print('|\tBottle of Messages Burn!\t\t|')
-        print('|\tTchuss!\t\t\t|')
-        print('#################################')
-    except (IndexError, socket.error, EOFError):
-        print('#################################')
-        print('|\tA Error is raised!\t|')
-        print('|\tTchuss!\t\t\t|')
-        print('#################################')
-    except AttributeError:
-        print('#################################')
-        print('|\tCant close the comunication!\t|')
-        print('|\tTchuss!\t\t\t|')
-        print('#################################')
+    if errorKey == '@SERVER/NO_CONNECTION':
+        print('# ################################### #')
+        print('# Sorry! All server is down           #')
+        print('# ################################### #')
     exit()
 # ########################################################################### #
 # ########################################################################### #
@@ -199,12 +186,13 @@ def startConnectWithServers():
                 }
             )
             CONFIG['connected'] = True
+            CONFIG['servers'][count]['status'] = LIVE_STATUS
             print ('+ + + + + + + + + [CONNECTION SUCCESS] + + + + + + + + +')
             print ('Server: ' + server['name'])
             print ('Status: ' + server['status'])
             print ('IP: ' + server['ip'])
             print ('Port:' + str(server['port']))
-            print ("\n\nLoad the program")
+            print ("\n\nLoad the program...")
             sleep(3)
         except (socket.error, AttributeError):
             CONFIG['servers'][count]['status'] = DEATH_STATUS
@@ -214,10 +202,12 @@ def startConnectWithServers():
             print ('IP: ' + server['ip'])
             print ('Port:' + str(server['port']))
             count += 1
-            print ("Try again in ", end='\r')
-            for i in range(5):
-                print (str(5-i) + "...")
+            for i in range(3):
+                print ("- Try again in: " + str(3-i))
                 sleep(1)
+                print ('\r', end='')
+        if count >= len(CONFIG['servers']):
+            exitProgramWithError('@SERVER/NO_CONNECTION')
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
@@ -969,7 +959,7 @@ def remoteCreateUser(email, name):
 
 def createAccount():
     print(' ______________________________________')
-    print('|    Welcome Bottle of Messages        |')
+    print('|    Welcome To Bottle of Messages     |')
     print('|        Create new account            |')
     print(' --------------------------------------')
     email = readEmailFromKey()
@@ -999,9 +989,9 @@ def loginScreen():
     while len(STORE['user']) == 0:
         os.system('cls||clear')
         print('# ################################################ #')
-        print('# 1 - Login')
-        print('# 2 - Join Us')
-        print('# 0 - Exit Bottle of Messages')
+        print('# 1 - Login                                        #')
+        print('# 2 - Join Us                                      #')
+        print('# 0 - Exit Bottle of Messages                      #')
         print('# ################################################ #')
         menuChoice = readMenuChoiceFromKey()
         if menuChoice == 1:
@@ -1026,8 +1016,6 @@ def loginConfirmation():
 
 
 if __name__ == "__main__":
-    global STORE
-    global CONFIG
     startConnectWithServers()
     os.system('cls||clear')
     if CONFIG['connected'] is True:
