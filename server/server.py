@@ -2,6 +2,7 @@
 import rpyc
 import sys
 import re
+import socket
 import logging
 import collections
 
@@ -10,17 +11,46 @@ import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
+from config.server import SERVERS_LIST, LIVE_STATUS, DEATH_STATUS
+
 sys.path.append('..')
+CONNECTION_COUNT = 0
 
 
 class ServerService(rpyc.Service):
-    def __init__():
-        pass
+    high_list = []
 
-    def exposed_live():
-        return {
-            'type': '@CONNECTED'
-        }
+    def __init__(self, a):
+        global CONNECTION_COUNT
+        if CONNECTION_COUNT % 10 == 0:
+            self.checkServers()
+        CONNECTION_COUNT += 1
+        logging.info('Connection count: ' + str(CONNECTION_COUNT))
+
+    def checkServers(self):
+        del self.high_list[:]
+        SERVERCONNECTION = None
+        for server in SERVERS_LIST:
+            try:
+                SERVERCONNECTION = rpyc.connect(
+                    server['ip'],
+                    server['port']
+                )
+                server['status'] = LIVE_STATUS
+                self.high_list.append(server)
+                SERVERCONNECTION.close()
+            except(socket.error, AttributeError, EOFError):
+                server['status'] = DEATH_STATUS
+                logging.info(
+                    '+ + + + + + + + + + [CONNECTION] + + + + + + + + + +'
+                )
+                logging.info('Server: ' + server['name'])
+                logging.info('IP: ' + server['ip'])
+                logging.info('Port:' + str(server['port']))
+                logging.info('Status: ' + server['status'])
+
+    def exposed_live(self):
+        return str('@CONNECTED')
 
     def on_connect(self):
         # code that runs when a connection is created
