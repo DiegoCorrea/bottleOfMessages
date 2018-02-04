@@ -11,7 +11,13 @@ def createChat(user_id, contact_id):
     cursor.execute("""
         INSERT INTO chats (id, user_id, contact_id, created_at)
         VALUES (?, ?, ?, ?)
-    """, (str(uuid.uuid4()), user_id, contact_id, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+    """, (
+            str(uuid.uuid4()),
+            user_id,
+            contact_id,
+            strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        )
+    )
     conn.commit()
     conn.close()
 
@@ -38,7 +44,9 @@ def getChatWith(user_id, contact_id):
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chats
-        WHERE (user_id = ? AND contact_id = ?) OR (user_id = ? AND contact_id = ?);
+        WHERE (
+            user_id = ? AND contact_id = ?) OR (user_id = ? AND contact_id = ?
+        );
     """, (user_id, contact_id, contact_id, user_id,))
     data = cursor.fetchone()
     conn.close()
@@ -71,6 +79,12 @@ def sendMessage(chat_id, sender_id, message):
     cursor.execute("""
         INSERT INTO chat_messages (chat_id, sender_id, message, created_at)
         VALUES (?, ?, ?, ?)
-    """, (chat_id, sender_id, message, str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))))
+    """, (
+            chat_id,
+            sender_id,
+            message,
+            str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+        )
+    )
     conn.commit()
     conn.close()
