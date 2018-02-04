@@ -1,7 +1,9 @@
 import sqlite3
 import uuid
-from datetime import datetime
+
 from time import gmtime, strftime
+from config.server import WHO_AM_I
+
 
 def createChat(user_id, contact_id):
     conn = sqlite3.connect('./db/whatsApp.db')
@@ -12,6 +14,7 @@ def createChat(user_id, contact_id):
     """, (str(uuid.uuid4()), user_id, contact_id, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
     conn.commit()
     conn.close()
+
 
 def allUserChat(user_id):
     conn = sqlite3.connect('./db/whatsApp.db')
@@ -29,6 +32,7 @@ def allUserChat(user_id):
         data.append(linha)
     return data
 
+
 def getChatWith(user_id, contact_id):
     conn = sqlite3.connect('./db/whatsApp.db')
     cursor = conn.cursor()
@@ -41,6 +45,7 @@ def getChatWith(user_id, contact_id):
     if data is None:
         return []
     return data
+
 
 def getMessages(chat_id, limit=20):
     conn = sqlite3.connect('./db/whatsApp.db')
@@ -58,6 +63,7 @@ def getMessages(chat_id, limit=20):
     for linha in itens:
         data.append(linha)
     return data
+
 
 def sendMessage(chat_id, sender_id, message):
     conn = sqlite3.connect('./db/whatsApp.db')
