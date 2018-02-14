@@ -82,9 +82,6 @@ class ServerService(rpyc.Service):
                 logging.error('Port:' + str(server['port']))
                 logging.error('Status: ' + server['status'])
 
-    def exposed_live(self):
-        return str('@CONNECTED')
-
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
@@ -99,31 +96,9 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod
-    def exposed_serverReplaceCreateUser(self, name, email):
-        UserController.create(email=email, name=name)
-
-    @classmethod
-    def broadcast_replaceCreateUser(self, name, email):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info("[Replace Create User] - " + str(server['name']))
-                SERVERCONNECTION.root.serverReplaceCreateUser(name, email)
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+    def exposed_serverReplaceCreateUser(self, name, email, created_at):
+        logging.info(' _____ Replace user '+str(email))
+        UserController.create(email=email, name=name, created_at=created_at)
 
     @classmethod  # this is an exposed method
     def exposed_createUser(self, name, email):

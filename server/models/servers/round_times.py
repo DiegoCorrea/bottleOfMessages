@@ -53,3 +53,17 @@ def last():
     if data is None:
         return []
     return data
+
+
+def findBy_round(_round_id):
+    conn = sqlite3.connect(SERVER_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM round_times
+        WHERE _round = ?;
+    """, (_round_id,))
+    data = cursor.fetchone()
+    conn.close()
+    if data is None:
+        return []
+    return data
