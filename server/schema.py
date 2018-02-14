@@ -102,3 +102,63 @@ print('...OK!')
 print('Tabelas criadas com sucesso.')
 # desconectando...
 conn.close()
+
+
+# ##################################################################### #
+print ('\n\n')
+# conectando...
+conn = sqlite3.connect(
+    os.path.dirname(
+        os.path.abspath(
+            inspect.getfile(
+                inspect.currentframe()
+            )
+        )
+    ) + '/db/' + 'servers.db'
+)
+# definindo um cursor
+cursor = conn.cursor()
+print('Default Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS default_servers_list (
+        name CHAR(64) NOT NULL,
+        ip VARCHAR(32) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+
+cursor.execute("""
+    INSERT INTO default_servers_list
+        (ip, name, port)
+        VALUES ('127.0.0.1', 'Thot', 27001);
+""")
+conn.commit()
+
+cursor.execute("""
+    INSERT INTO default_servers_list
+        (ip, name, port)
+        VALUES ('127.0.0.1', 'Exu', 27002);
+""")
+conn.commit()
+print('...OK!')
+
+print('Worker Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS worker_servers_list (
+        ip VARCHAR(32) NOT NULL,
+        name CHAR(64) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+print('...OK!')
+print('Suspect Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS suspect_servers_list (
+        ip VARCHAR(32) NOT NULL,
+        name CHAR(64) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+print('...OK!')
+# desconectando...
+conn.close()
