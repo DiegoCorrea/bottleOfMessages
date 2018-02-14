@@ -29,9 +29,6 @@ ROUND = 0
 
 class ServerService(rpyc.Service):
 
-    def __init__(self):
-        pass
-
     def requireToEnter(self):
         global HIGH_LIST
         SERVERCONNECTION = None
@@ -885,7 +882,7 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod  # this is an exposed method
-    def newRound(self, _round):
+    def exposed_newRound(self, _round):
         logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
-        logging.debug(str(_round))
+        logging.info(str(_round))
         return True

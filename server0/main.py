@@ -19,12 +19,19 @@ sys.path.append('..')
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
-        lastRound = Round_times_Model.last()
-        _round = Round_times_Model.create(_round=(int(lastRound[0]) + 1))
         if WHO_AM_I["order"] == "King":
+            Round_times_Model.create(
+                    _round=(
+                        int(
+                            Round_times_Model.last()[0]
+                        ) + 1
+                    )
+            )
+            _round = Round_times_Model.last()
             for server in Default_list_Model.all():
                 try:
                     print (server)
+                    print (_round)
                     SERVERCONNECTION = rpyc.connect(
                         server[1],
                         server[2],
