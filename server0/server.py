@@ -12,25 +12,25 @@ import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-from config.server import SERVERS_LIST, LIVE_STATUS, DEATH_STATUS, WHO_AM_I
+from config.server import (
+    DEFAULT_SERVERS_LIST,
+    LIVE_STATUS,
+    DEATH_STATUS,
+    WHO_AM_I
+)
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 sys.path.append('..')
 CONNECTION_COUNT = 0
 HIGH_LIST = []
 FIRST_TIME = True
+ROUND = 0
 
 
 class ServerService(rpyc.Service):
 
-    def __init__(self, how):
-        global CONNECTION_COUNT
-        global FIRST_TIME
-        if CONNECTION_COUNT % 10 == 0:
-            self.checkServers()
-        if FIRST_TIME is True:
-            self.requireToEnter()
-            FIRST_TIME = False
+    def __init__(self):
+        pass
 
     def requireToEnter(self):
         global HIGH_LIST
@@ -63,7 +63,7 @@ class ServerService(rpyc.Service):
         global HIGH_LIST
         del HIGH_LIST[:]
         SERVERCONNECTION = None
-        for server in SERVERS_LIST:
+        for server in DEFAULT_SERVERS_LIST:
             try:
                 SERVERCONNECTION = rpyc.connect(
                     server['ip'],
@@ -88,9 +88,6 @@ class ServerService(rpyc.Service):
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
-        global CONNECTION_COUNT
-        CONNECTION_COUNT += 1
-        logging.debug('Connection count: ' + str(CONNECTION_COUNT))
         pass
 
     def on_disconnect(self):
@@ -882,3 +879,13 @@ class ServerService(rpyc.Service):
             'type': '@USER/CONTACT/DATA',
             'payload': userContactList
         }
+
+# ########################################################################## #
+# ########################################################################## #
+# ########################################################################## #
+
+    @classmethod  # this is an exposed method
+    def newRound(self, _round):
+        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
+        logging.debug(str(_round))
+        return True

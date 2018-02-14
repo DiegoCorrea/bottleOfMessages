@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import inspect
+from time import gmtime, strftime
 from config.server import WHO_AM_I
 
 # conectando...
@@ -100,5 +101,93 @@ CREATE TABLE IF NOT EXISTS group_messages (
 """)
 print('...OK!')
 print('Tabelas criadas com sucesso.')
+# desconectando...
+conn.close()
+
+
+# ##################################################################### #
+print ('\n\n')
+# conectando...
+conn = sqlite3.connect(
+    os.path.dirname(
+        os.path.abspath(
+            inspect.getfile(
+                inspect.currentframe()
+            )
+        )
+    ) + '/db/' + 'servers.db'
+)
+# definindo um cursor
+cursor = conn.cursor()
+print('Default Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS default_servers_list (
+        name CHAR(64) NOT NULL,
+        ip VARCHAR(32) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+conn.commit()
+
+cursor.execute("""
+    INSERT INTO default_servers_list
+        (ip, name, port)
+        VALUES ('127.0.0.1', 'Thot', 27001);
+""")
+conn.commit()
+
+cursor.execute("""
+    INSERT INTO default_servers_list
+        (ip, name, port)
+        VALUES ('127.0.0.1', 'Exu', 27002);
+""")
+conn.commit()
+print('...OK!')
+
+print('Worker Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS worker_servers_list (
+        ip VARCHAR(32) NOT NULL,
+        name CHAR(64) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+conn.commit()
+print('...OK!')
+
+print('Suspect Server List')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS suspect_servers_list (
+        ip VARCHAR(32) NOT NULL,
+        name CHAR(64) NOT NULL,
+        port INTEGER NOT NULL
+    );
+""")
+conn.commit()
+print('...OK!')
+
+print('Round Times')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS round_times (
+        _round INTEGER NOT NULL PRIMARY KEY,
+        created_at TEXT NOT NULL
+    );
+""")
+conn.commit()
+
+cursor.execute("""
+    INSERT INTO round_times
+        (_round, created_at)
+        VALUES (?, ?);
+""", (
+        0,
+        strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    )
+)
+conn.commit()
+print('...OK!')
 # desconectando...
 conn.close()
