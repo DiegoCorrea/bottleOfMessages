@@ -10,10 +10,29 @@ import os
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I, ROUND_TIME
+
+import controllers.users as UserController
 import models.servers.default_servers_list as Default_list_Model
 import models.servers.round_times as Round_times_Model
 
 sys.path.append('..')
+
+
+def server_sync_Users(SERVERCONNECTION):
+    lastRound = Round_times_Model.last()
+    allUsersToSync = UserController.atRound(
+        _roundStarted=Round_times_Model.findBy_round(
+            _round_id=lastRound[0]-1
+        )[1],
+        _roundFinished=lastRound[1]
+    )
+    print ('Total to sync: ', str(len(allUsersToSync)))
+    for user in allUsersToSync:
+        SERVERCONNECTION.root.serverReplaceCreateUser(
+            email=user[0],
+            name=user[1],
+            created_at=user[2]
+        )
 
 
 def server_Syncronization():
@@ -43,6 +62,7 @@ def server_Syncronization():
                     vote = SERVERCONNECTION.root.newRound(_round)
                     if not vote:
                         print ('Diferença no banco')
+                    server_sync_Users(SERVERCONNECTION)
                     SERVERCONNECTION.close()
                 except(socket.error, AttributeError, EOFError):
                     logging.error(

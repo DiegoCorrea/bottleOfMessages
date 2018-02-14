@@ -7,7 +7,14 @@ from config.server import WHO_AM_I
 sys.path.append('..')
 
 
-def create(email, name):
+def create(
+    email,
+    name,
+    created_at=strftime(
+        "%Y-%m-%d %H:%M:%S",
+        gmtime()
+    )
+):
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
@@ -16,14 +23,8 @@ def create(email, name):
     """, (
             email,
             name,
-            strftime(
-                "%Y-%m-%d %H:%M:%S",
-                gmtime()
-            ),
-            strftime(
-                "%Y-%m-%d %H:%M:%S",
-                gmtime()
-            )
+            created_at,
+            created_at
         )
     )
     conn.commit()
@@ -53,4 +54,21 @@ def findBy_ID(user_id):
     conn.close()
     if data is None:
         return []
+    return data
+
+
+def atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM users WHERE created_at >= ? AND created_at < ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
     return data
