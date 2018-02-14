@@ -49,7 +49,7 @@ def readGroupIDFromKey():
     inText = ''
     while inText == '':
         try:
-            inText = raw_input("Group Code: ")
+            inText = input("Group Code: ")
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
@@ -63,7 +63,7 @@ def readNameFromKey():
     inText = ''
     while inText == '':
         try:
-            inText = raw_input("Name: ")
+            inText = input("Name: ")
         except KeyboardInterrupt:
             exitProgramWithSuccess()
         except (NameError, SyntaxError):
@@ -77,7 +77,7 @@ def readEmailFromKey():
     inText = ''
     while inText == '':
         try:
-            inText = raw_input("Email: ")
+            inText = input("Email: ")
             if re.match(r"[^@]+@[^@]+\.[^@]+", inText) is None:
                 print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
                 print ('\tMessage: Please type a valid email address')
@@ -108,7 +108,7 @@ def waitEnter():
     inText = 'a'
     while inText != '':
         try:
-            inText = raw_input("Press Enter to continue... ")
+            inText = input("Press Enter to continue... ")
             os.system('cls||clear')
             return inText
         except KeyboardInterrupt:
@@ -274,11 +274,11 @@ def remoteAddUserToAGroup(group_id):
             group_id=group_id
         )
         return data
-    except (IndexError, socket.error, AttributeError, EOFError), error:
+    except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {
-                'message': error
+                'message': ''
             }
         }
 
@@ -351,8 +351,8 @@ def createGroup(group_name):
         if data['type'] == '@GROUP/DATA':
             STORE['groups'][data['payload']['id']] = data['payload']
             return data['payload']
-    except AttributeError, e:
-        print('Algo de errado ocorreu: ', e)
+    except AttributeError:
+        print('Algo de errado ocorreu: ')
 
 
 def screenCreateGroup():
@@ -482,7 +482,7 @@ def screenGroupChat():
             print("Commands:")
             print("\t[:q] to exit")
             print("\t[:u] to update chat")
-            text = raw_input("Text:\n")
+            text = input("Text:\n")
             if text == ':q':
                 return ''
             elif text == ':u' or text == '':
@@ -491,10 +491,10 @@ def screenGroupChat():
                 sendGroupMessege(group_id, text)
         except KeyboardInterrupt:
             exitProgramWithSuccess()
-        except (NameError, SyntaxError), e:
+        except (NameError, SyntaxError):
             print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
             print('\tMessage: Wrong Input, try again!')
-            print('Error Message: ', e)
+            print('Error Message: ')
             text = ''
             waitEnter()
 # #############################################################################
@@ -795,7 +795,7 @@ def screenContactChat():
             print("Commands:")
             print("\t[:q] to exit")
             print("\t[:u] to update chat")
-            text = raw_input("Text: \n")
+            text = input("Text: \n")
             if text == ':q':
                 return ''
             elif text == ':u' or text == '':
@@ -922,8 +922,8 @@ def remoteLogOnSystem(email):
     try:
         data = SERVERCONNECTION.root.userLogin(user_id=email)
         return data
-    except (IndexError, socket.error, AttributeError, EOFError), e:
-        print('+++ Erro: ', e)
+    except (IndexError, socket.error, AttributeError, EOFError):
+        print('+++ Erro: ')
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -979,7 +979,7 @@ def createAccount():
         return ''
     if data['type'] == 'ERROR/CONNECTION':
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
-        print('\tMessage: Connection Error!')
+        print('\tMessage: Connection Error!aa')
         return ''
     STORE['user'] = data['payload']
 
