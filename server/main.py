@@ -11,6 +11,7 @@ from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I, ROUND_TIME
 import models.servers.default_servers_list as Default_list_Model
+import models.servers.round_times as Round_times_Model
 
 sys.path.append('..')
 
@@ -18,27 +19,30 @@ sys.path.append('..')
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
-        for server in Default_list_Model.all():
-            try:
-                print (server)
-                SERVERCONNECTION = rpyc.connect(
-                    server[1],
-                    server[2],
-                    config={
-                        'allow_public_attrs': True,
-                        "allow_pickle": True
-                    }
-                )
-                SERVERCONNECTION.root.newRound()
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
-                )
-                logging.error('Server: ' + server[0])
-                logging.error('IP: ' + server[1])
-                logging.error('Port:' + str(server[2]))
-            print ('\n')
+        lastRound = Round_times_Model.last()
+        _round = Round_times_Model.create(_round=(int(lastRound[0]) + 1))
+        if WHO_AM_I["order"] == "King":
+            for server in Default_list_Model.all():
+                try:
+                    print (server)
+                    SERVERCONNECTION = rpyc.connect(
+                        server[1],
+                        server[2],
+                        config={
+                            'allow_public_attrs': True,
+                            "allow_pickle": True
+                        }
+                    )
+                    SERVERCONNECTION.root.newRound(_round)
+                    SERVERCONNECTION.close()
+                except(socket.error, AttributeError, EOFError):
+                    logging.error(
+                        '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
+                    )
+                    logging.error('Server: ' + server[0])
+                    logging.error('IP: ' + server[1])
+                    logging.error('Port:' + str(server[2]))
+                print ('\n')
 
 
 def setup_logging(

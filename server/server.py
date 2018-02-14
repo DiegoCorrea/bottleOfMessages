@@ -885,5 +885,6 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod  # this is an exposed method
-    def newRound(self):
+    def newRound(self, _round):
         logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
+        logging.debug(str(_round))
