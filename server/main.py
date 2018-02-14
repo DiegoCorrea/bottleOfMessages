@@ -33,7 +33,9 @@ def server_Syncronization():
                             "allow_pickle": True
                         }
                     )
-                    SERVERCONNECTION.root.newRound(_round)
+                    vote = SERVERCONNECTION.root.newRound(_round)
+                    if not vote:
+                        pass
                     SERVERCONNECTION.close()
                 except(socket.error, AttributeError, EOFError):
                     logging.error(

@@ -888,3 +888,4 @@ class ServerService(rpyc.Service):
     def newRound(self, _round):
         logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
         logging.debug(str(_round))
+        return True
