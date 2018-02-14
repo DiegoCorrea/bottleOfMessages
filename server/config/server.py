@@ -1,5 +1,6 @@
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
+ROUND_TIME = 3
 
 WHO_AM_I = {
     "name": "Hermes",
@@ -8,7 +9,7 @@ WHO_AM_I = {
     "port": 27000
 }
 
-SERVERS_LIST = [
+DEFAULT_SERVERS_LIST = [
     {
         'status': '',
         'name': 'Thot',
