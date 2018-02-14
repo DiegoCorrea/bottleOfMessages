@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import inspect
+from time import gmtime, strftime
 from config.server import WHO_AM_I
 
 # conectando...
@@ -126,6 +127,7 @@ cursor.execute("""
         port INTEGER NOT NULL
     );
 """)
+conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
@@ -150,7 +152,9 @@ cursor.execute("""
         port INTEGER NOT NULL
     );
 """)
+conn.commit()
 print('...OK!')
+
 print('Suspect Server List')
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS suspect_servers_list (
@@ -159,6 +163,31 @@ cursor.execute("""
         port INTEGER NOT NULL
     );
 """)
+conn.commit()
+print('...OK!')
+
+print('Round Times')
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS round_times (
+        _round INTEGER NOT NULL PRIMARY KEY,
+        created_at TEXT NOT NULL
+    );
+""")
+conn.commit()
+
+cursor.execute("""
+    INSERT INTO round_times
+        (_round, created_at)
+        VALUES (?, ?);
+""", (
+        0,
+        strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    )
+)
+conn.commit()
 print('...OK!')
 # desconectando...
 conn.close()
