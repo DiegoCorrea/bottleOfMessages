@@ -29,14 +29,8 @@ ROUND = 0
 
 class ServerService(rpyc.Service):
 
-    def __init__(self, how):
-        global CONNECTION_COUNT
-        global FIRST_TIME
-        if CONNECTION_COUNT % 10 == 0:
-            self.checkServers()
-        if FIRST_TIME is True:
-            self.requireToEnter()
-            FIRST_TIME = False
+    def __init__(self):
+        pass
 
     def requireToEnter(self):
         global HIGH_LIST
@@ -94,9 +88,6 @@ class ServerService(rpyc.Service):
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
-        global CONNECTION_COUNT
-        CONNECTION_COUNT += 1
-        logging.debug('Connection count: ' + str(CONNECTION_COUNT))
         pass
 
     def on_disconnect(self):
@@ -888,3 +879,11 @@ class ServerService(rpyc.Service):
             'type': '@USER/CONTACT/DATA',
             'payload': userContactList
         }
+
+# ########################################################################## #
+# ########################################################################## #
+# ########################################################################## #
+
+    @classmethod  # this is an exposed method
+    def newRound(self):
+        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')

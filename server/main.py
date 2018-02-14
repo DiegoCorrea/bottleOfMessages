@@ -1,13 +1,16 @@
 import logging
 import logging.config
 import threading
+import socket
 import time
+import rpyc
+import json
 import sys
 import os
-import json
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I, ROUND_TIME
+import models.servers.default_servers_list as Default_list_Model
 
 sys.path.append('..')
 
@@ -15,7 +18,27 @@ sys.path.append('..')
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
-        print (threading.enumerate())
+        for server in Default_list_Model.all():
+            try:
+                print (server)
+                SERVERCONNECTION = rpyc.connect(
+                    server[1],
+                    server[2],
+                    config={
+                        'allow_public_attrs': True,
+                        "allow_pickle": True
+                    }
+                )
+                SERVERCONNECTION.root.newRound()
+                SERVERCONNECTION.close()
+            except(socket.error, AttributeError, EOFError):
+                logging.error(
+                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
+                )
+                logging.error('Server: ' + server[0])
+                logging.error('IP: ' + server[1])
+                logging.error('Port:' + str(server[2]))
+            print ('\n')
 
 
 def setup_logging(
