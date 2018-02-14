@@ -12,6 +12,9 @@ import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
+import models.servers.default_servers_list as Default_list_Model
+import models.servers.round_times as Round_times_Model
+
 from config.server import (
     DEFAULT_SERVERS_LIST,
     LIVE_STATUS,
@@ -885,4 +888,11 @@ class ServerService(rpyc.Service):
     def exposed_newRound(self, _round):
         logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
         logging.debug(str(_round))
+        lastRound = Round_times_Model.last()
+        if _round[0] - lastRound[0] > 1:
+            return False
+        Round_times_Model.create(
+                _round=_round[0],
+                created_at=_round[1]
+        )
         return True

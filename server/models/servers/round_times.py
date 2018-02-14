@@ -7,7 +7,13 @@ from config.server import SERVER_DB_PATH
 sys.path.append('..')
 
 
-def create(_round):
+def create(
+    _round,
+    created_at=strftime(
+        "%Y-%m-%d %H:%M:%S",
+        gmtime()
+    )
+):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -15,10 +21,7 @@ def create(_round):
         VALUES (?, ?);
     """, (
             _round,
-            strftime(
-                "%Y-%m-%d %H:%M:%S",
-                gmtime()
-            )
+            created_at
         )
     )
     conn.commit()

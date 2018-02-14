@@ -42,7 +42,7 @@ def server_Syncronization():
                     )
                     vote = SERVERCONNECTION.root.newRound(_round)
                     if not vote:
-                        pass
+                        print ('Diferença no banco')
                     SERVERCONNECTION.close()
                 except(socket.error, AttributeError, EOFError):
                     logging.error(
