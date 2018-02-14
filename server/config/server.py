@@ -1,6 +1,6 @@
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
-ROUND_TIME = 3
+ROUND_TIME = 30
 SERVER_DB_PATH = './db/servers.db'
 
 WHO_AM_I = {

@@ -97,7 +97,7 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceCreateUser(self, name, email, created_at):
-        logging.info(' _____ Replace user '+str(email))
+        logging.info(' _____ Replace User '+str(email))
         UserController.create(email=email, name=name, created_at=created_at)
 
     @classmethod  # this is an exposed method
@@ -129,7 +129,6 @@ class ServerService(rpyc.Service):
         user = UserController.findBy_email(email=email)
         # Return
         logging.info('Finish [Create User] - return: @USER/DATA')
-        self.broadcast_replaceCreateUser(name=str(name), email=str(email))
         return {
             'type': '@USER/DATA',
             'payload': {
@@ -195,35 +194,6 @@ class ServerService(rpyc.Service):
     def exposed_serverReplaceCreateChat(self, user_id, contact_id):
         ChatController.createChat(user_id=user_id, contact_id=contact_id)
 
-    @classmethod
-    def broadcast_replaceCreateChat(self, user_id, contact_id):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Create Chat] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceCreateChat(
-                    user_id,
-                    contact_id
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
-
     @classmethod  # this is an exposed method
     def exposed_createChat(self, user_id, contact_id):
         logging.info('Start [Create Chat]')
@@ -245,7 +215,6 @@ class ServerService(rpyc.Service):
                 contact_id=contact_id
             )
         logging.info('Finish [Create Chat] - return: @CHAT/DATA')
-        self.broadcast_replaceCreateChat(user_id, contact_id)
         return {
             'type': '@CHAT/DATA',
             'payload': {
@@ -753,37 +722,13 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod
-    def exposed_serverReplaceAddContact(self, user_id, contact_id):
-        ContactController.create(user_id=user_id, contact_id=contact_id)
-
-    @classmethod
-    def broadcast_replaceAddContact(self, user_id, contact_id):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Create Contact] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceAddContact(
-                    user_id,
-                    contact_id
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+    def exposed_serverReplaceAddContact(self, user_id, contact_id, created_at):
+        logging.info(' _____ Replace Contacts: ' + user_id)
+        ContactController.create(
+            user_id=user_id,
+            contact_id=contact_id,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_addContact(self, user_id, contact_id):
@@ -812,7 +757,6 @@ class ServerService(rpyc.Service):
             user_id=user_id,
             contact_id=contact_id
         )
-        self.broadcast_replaceAddContact(user_id, contact_id)
         userContact = UserController.findBy_ID(user_id=contact[2])
         return {
             'type': '@USER/CONTACT/DATA',
