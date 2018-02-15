@@ -10,11 +10,14 @@ sys.path.append('..')
 def create(
     email,
     name,
-    created_at=strftime(
-        "%Y-%m-%d %H:%M:%S",
-        gmtime()
-    )
+    created_at=None
 ):
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    updated_at = created_at
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
@@ -24,7 +27,7 @@ def create(
             email,
             name,
             created_at,
-            created_at
+            updated_at
         )
     )
     conn.commit()
@@ -61,7 +64,8 @@ def atRound(_roundStarted, _roundFinished):
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM users WHERE created_at >= ? AND created_at < ?;
+        SELECT * FROM users
+        WHERE created_at BETWEEN ? AND ?;
     """, (_roundStarted, _roundFinished, )
     )
     itens = cursor.fetchall()

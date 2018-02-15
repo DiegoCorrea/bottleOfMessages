@@ -723,7 +723,7 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceAddContact(self, user_id, contact_id, created_at):
-        logging.info(' _____ Replace Contacts: ' + user_id)
+        logging.info(' _____ Replace Contacts: ' + str(user_id))
         ContactController.create(
             user_id=user_id,
             contact_id=contact_id,

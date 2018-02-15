@@ -9,11 +9,13 @@ sys.path.append('..')
 
 def create(
     _round,
-    created_at=strftime(
-        "%Y-%m-%d %H:%M:%S",
-        gmtime()
-    )
+    created_at=None
 ):
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""

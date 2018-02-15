@@ -10,28 +10,43 @@ import os
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I, ROUND_TIME
-
+from time import gmtime, strftime
+import controllers.chats as ChatController
 import controllers.users as UserController
+import controllers.groups as GroupController
+import controllers.contacts as ContactController
+
 import models.servers.default_servers_list as Default_list_Model
 import models.servers.round_times as Round_times_Model
 
 sys.path.append('..')
 
 
-def server_sync_Users(SERVERCONNECTION):
-    lastRound = Round_times_Model.last()
-    allUsersToSync = UserController.atRound(
-        _roundStarted=Round_times_Model.findBy_round(
-            _round_id=lastRound[0]-1
-        )[1],
-        _roundFinished=lastRound[1]
+def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = UserController.atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
     )
-    print ('Total to sync: ', str(len(allUsersToSync)))
-    for user in allUsersToSync:
+    print ('+++ Users Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
         SERVERCONNECTION.root.serverReplaceCreateUser(
-            email=user[0],
-            name=user[1],
-            created_at=user[2]
+            email=item[0],
+            name=item[1],
+            created_at=item[2]
+        )
+
+
+def server_sync_Contacts(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = ContactController.atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Contacts Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceAddContact(
+            user_id=item[0],
+            contact_id=item[1],
+            created_at=item[2]
         )
 
 
@@ -39,18 +54,22 @@ def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
         if WHO_AM_I["order"] == "King":
+            _oldRound = Round_times_Model.last()
             Round_times_Model.create(
                     _round=(
                         int(
-                            Round_times_Model.last()[0]
+                            _oldRound[0]
                         ) + 1
+                    ),
+                    created_at=strftime(
+                        "%Y-%m-%d %H:%M:%S",
+                        gmtime()
                     )
             )
-            _round = Round_times_Model.last()
+            _newRound = Round_times_Model.last()
+            print ('&&&&& new round ' + str(_newRound))
             for server in Default_list_Model.all():
                 try:
-                    print (server)
-                    print (_round)
                     SERVERCONNECTION = rpyc.connect(
                         server[1],
                         server[2],
@@ -59,14 +78,23 @@ def server_Syncronization():
                             "allow_pickle": True
                         }
                     )
-                    vote = SERVERCONNECTION.root.newRound(_round)
+                    vote = SERVERCONNECTION.root.newRound(_newRound)
                     if not vote:
                         print ('Diferença no banco')
-                    server_sync_Users(SERVERCONNECTION)
+                    server_sync_Users(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+                    server_sync_Contacts(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
                     SERVERCONNECTION.close()
                 except(socket.error, AttributeError, EOFError):
                     logging.error(
-                        '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
+                        '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
                     )
                     logging.error('Server: ' + server[0])
                     logging.error('IP: ' + server[1])

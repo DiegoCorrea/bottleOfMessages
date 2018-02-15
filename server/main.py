@@ -10,7 +10,7 @@ import os
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 from config.server import WHO_AM_I, ROUND_TIME
-
+from time import gmtime, strftime
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
@@ -58,11 +58,16 @@ def server_Syncronization():
             Round_times_Model.create(
                     _round=(
                         int(
-                            Round_times_Model.last()[0]
+                            _oldRound[0]
                         ) + 1
+                    ),
+                    created_at=strftime(
+                        "%Y-%m-%d %H:%M:%S",
+                        gmtime()
                     )
             )
             _newRound = Round_times_Model.last()
+            print ('&&&&& new round ' + str(_newRound))
             for server in Default_list_Model.all():
                 try:
                     SERVERCONNECTION = rpyc.connect(
@@ -76,12 +81,20 @@ def server_Syncronization():
                     vote = SERVERCONNECTION.root.newRound(_newRound)
                     if not vote:
                         print ('Diferença no banco')
-                    server_sync_Users(SERVERCONNECTION, _newRound, _oldRound)
-                    server_sync_Contacts(SERVERCONNECTION, _newRound, _oldRound)
+                    server_sync_Users(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+                    server_sync_Contacts(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
                     SERVERCONNECTION.close()
                 except(socket.error, AttributeError, EOFError):
                     logging.error(
-                        '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
+                        '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
                     )
                     logging.error('Server: ' + server[0])
                     logging.error('IP: ' + server[1])

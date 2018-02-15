@@ -10,11 +10,13 @@ sys.path.append('..')
 def create(
     user_id,
     contact_id,
-    created_at=strftime(
-        "%Y-%m-%d %H:%M:%S",
-        gmtime()
-    )
+    created_at=None
 ):
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
@@ -60,7 +62,8 @@ def atRound(_roundStarted, _roundFinished):
     conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM contacts WHERE created_at >= ? AND created_at < ?;
+        SELECT * FROM contacts
+        WHERE created_at BETWEEN ? AND ?;
     """, (_roundStarted, _roundFinished, )
     )
     itens = cursor.fetchall()
