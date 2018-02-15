@@ -689,6 +689,8 @@ def createChat(email):
 
 def printChatMessages(contact_id):
     global STORE
+    print ('=================')
+    print (STORE['chats'][contact_id])
     printChat(STORE['chats'][contact_id])
     if len(STORE['chats']) > 0 and len(STORE['chats'][contact_id]['messages']) > 0:
         for message in STORE['chats'][contact_id]['messages']:
@@ -736,8 +738,7 @@ def sendChatMessage(contact_id, message):
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: Connection Error!')
         return ''
-    if data['type'] == '@CHAT/MESSAGE/DATA':
-        STORE['chats'][contact_id] = data['payload']
+    STORE['chats'][contact_id]['messages'] = data['payload']
 
 
 def remoteGetChatMessages(contact_id):
@@ -777,14 +778,13 @@ def getChatMessages(contact_id):
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: Server Error')
         return ''
-    if data['type'] == '@CHAT/MESSAGE/DATA':
-        STORE['chats'][contact_id] = data['payload']
+    STORE['chats'][contact_id]['messages'] = data['payload']
 
 
 def screenContactChat():
     contact_id = readEmailFromKey()
     if contact_id not in STORE['chats']:
-        createChat(contact_id)
+        STORE['chats'][contact_id] = createChat(contact_id)
     text = ''
     while True:
         try:
@@ -817,7 +817,6 @@ def printChat(data):
     print('+ Chat With: ', data['name'])
     print('+ Email: ', data['email'])
     print('+ Since at: ', data['created_at'])
-    print('+ Last update: ')
     print('--------------------------------------------------')
 
 
@@ -870,10 +869,10 @@ def getUserChats():
 
 
 def screenUserChat():
-    getUserChats()
     menuChoice = 10
     global STORE
     while True:
+        getUserChats()
         printScreenHeader()
         print('1 - All Chat')
         print('2 - Open Chat')

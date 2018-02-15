@@ -34,7 +34,7 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceCreateUser(self, name, email, created_at):
-        logging.info(' _____ Replace User '+str(email))
+        logging.info(' _____ Replace User ' + str(email))
         UserController.create(email=email, name=name, created_at=created_at)
 
     @classmethod  # this is an exposed method
@@ -254,14 +254,7 @@ class ServerService(rpyc.Service):
             )
             return {
                 'type': '@CHAT/MESSAGE/DATA',
-                'payload': {
-                    'email': contact[0],
-                    'name': contact[1],
-                    'created_at': chat[3],
-                    'messages': collections.OrderedDict(
-                        sorted(chatMessageHistory.items())
-                    )
-                }
+                'payload': chatMessageHistory
             }
         except TypeError:
             logging.error(
@@ -282,6 +275,10 @@ class ServerService(rpyc.Service):
         message,
         created_at
     ):
+        logging.info(
+            ' _____ Replace Chat Message: ' + str(chat_id)
+            + ' sender ' + str(sender_id)
+        )
         ChatController.sendMessage(
             _id=_id,
             chat_id=chat_id,
@@ -339,6 +336,10 @@ class ServerService(rpyc.Service):
         group_name,
         created_at
     ):
+        logging.info(
+            ' _____ Replace Group: ' + str(_id)
+            + ' name ' + str(group_name)
+        )
         GroupController.create(
             _id=_id,
             group_name=group_name,
@@ -428,6 +429,10 @@ class ServerService(rpyc.Service):
         _id,
         created_at
     ):
+        logging.info(
+            ' _____ Replace Add User to a Group: ' + str(user_id)
+            + ' to group ' + str(group_id)
+        )
         GroupController.addUser(
             _id=_id,
             user_id=user_id,
@@ -533,6 +538,10 @@ class ServerService(rpyc.Service):
         message,
         created_at
     ):
+        logging.info(
+            ' _____ Replace Group Message: ' + str(group_id)
+            + ' sender ' + str(sender_id)
+        )
         GroupController.sendMessage(
             _id=_id,
             group_id=group_id,

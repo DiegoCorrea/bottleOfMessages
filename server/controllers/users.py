@@ -17,17 +17,15 @@ def create(
             "%Y-%m-%d %H:%M:%S",
             gmtime()
         )
-    updated_at = created_at
     conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO users (email, name, created_at, updated_at)
-        VALUES (?, ?, ?, ?);
+        INSERT INTO users (email, name, created_at)
+        VALUES (?, ?, ?);
     """, (
             email,
             name,
             created_at,
-            updated_at
         )
     )
     conn.commit()

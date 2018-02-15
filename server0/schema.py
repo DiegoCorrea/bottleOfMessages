@@ -53,8 +53,7 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
         email CHAR(64) NOT NULL PRIMARY KEY,
         name VARCHAR(45) NOT NULL,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
+        created_at TEXT NOT NULL
 );
 """)
 print('...Ok!')

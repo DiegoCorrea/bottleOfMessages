@@ -22,7 +22,7 @@ def create(
     cursor.execute("""
         INSERT INTO groups (id, name, created_at)
         VALUES (?, ?, ?)
-    """, (_id, group_name, created_at))
+    """, (_id, group_name, created_at,))
     conn.commit()
     conn.close()
     return _id

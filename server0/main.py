@@ -100,7 +100,7 @@ def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
     )
     print ('+++ User Groups Total to sync: ', str(len(allItensToSync)))
     for item in allItensToSync:
-        SERVERCONNECTION.root.serverReplaceCreateGroup(
+        SERVERCONNECTION.root.serverReplaceAddUserToAGroup(
             _id=item[0],
             user_id=item[1],
             group_id=item[2],
