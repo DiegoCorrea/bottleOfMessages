@@ -690,49 +690,51 @@ class ServerService(rpyc.Service):
 
     @classmethod  # this is an exposed method
     def exposed_sync_default_servers(self, king, servers_list):
-        logging.info(' _____| Replace Default Servers: ' + str(servers_list))
         Default_list_Model.clean()
         Default_list_Model.create(
             name=copy.deepcopy(king['name']),
             ip=copy.deepcopy(king['ip']),
             port=copy.deepcopy(king['port'])
         )
+        logging.info(' _____| Replace Default King: ' + str(king))
         for server in copy.deepcopy(servers_list):
             if server['name'] == WHO_AM_I['name']:
-                return ''
+                continue
             Default_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],
                 port=server['port']
             )
+            logging.info(' _____| Replace Default Server: ' + str(server))
 
     @classmethod
     def exposed_sync_workers_servers(self, king, servers_list):
-        logging.info(' _____| Replace Workers Servers: ' + str(servers_list))
         Workers_list_Model.clean()
         Workers_list_Model.create(
             name=copy.deepcopy(king['name']),
             ip=copy.deepcopy(king['ip']),
             port=copy.deepcopy(king['port'])
         )
+        logging.info(' _____| Replace Worker King: ' + str(king))
         for server in copy.deepcopy(servers_list):
             if server['name'] == WHO_AM_I['name']:
-                return ''
+                continue
             Workers_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],
                 port=server['port']
             )
+            logging.info(' _____| Replace Worker Server: ' + str(server))
 
     @classmethod
     def exposed_sync_suspects_servers(self, servers_list):
-        logging.info(' _____| Replace Suspects Servers: ' + str(servers_list))
         Suspects_list_Model.clean()
         for server in copy.deepcopy(servers_list):
             if server['name'] == WHO_AM_I['name']:
-                return ''
+                continue
             Suspects_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],
                 port=server['port']
             )
+            logging.info(' _____| Replace Suspects Servers: ' + str(server))

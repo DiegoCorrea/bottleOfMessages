@@ -6,10 +6,15 @@ import time
 import rpyc
 import json
 import os
+
+from datetime import datetime
+from time import gmtime, strftime
+
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
-from config.server import WHO_AM_I, ROUND_TIME
-from time import gmtime, strftime
+
+from config.server import WHO_AM_I, ROUND_TIME, TIME_FORMAT
+
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
@@ -266,6 +271,18 @@ def server_Syncronization():
             whoIsAlive()
             sync_Servers_list()
             sync_Content()
+        elif WHO_AM_I['order'] == "Worker":
+            lastRound = Round_times_Model.last()
+            if (datetime.strptime(
+                    strftime(
+                        "%Y-%m-%d %H:%M:%S",
+                        gmtime()
+                    ), TIME_FORMAT
+                    ) - datetime.strptime(
+                        lastRound[1],
+                        TIME_FORMAT
+                    )) > 3*ROUND_TIME:
+                print (' >>>>>>>>>>> The King is dead')
 
 
 def setup_logging(

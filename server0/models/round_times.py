@@ -5,7 +5,6 @@ from time import gmtime, strftime
 from config.server import SERVER_DB_PATH
 
 
-
 def create(
     _round,
     created_at=None
