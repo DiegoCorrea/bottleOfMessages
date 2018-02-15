@@ -5,7 +5,6 @@ import socket
 import time
 import rpyc
 import json
-import sys
 import os
 from server import ServerService
 from rpyc.utils.server import ThreadedServer

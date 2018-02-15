@@ -5,28 +5,16 @@ import re
 import socket
 import logging
 import collections
-import copy
 
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-import models.default_servers_list as Default_list_Model
 import models.round_times as Round_times_Model
-
-from config.server import (
-    LIVE_STATUS,
-    DEATH_STATUS,
-    WHO_AM_I
-)
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 sys.path.append('..')
-CONNECTION_COUNT = 0
-HIGH_LIST = []
-FIRST_TIME = True
-ROUND = 0
 
 
 class ServerService(rpyc.Service):
