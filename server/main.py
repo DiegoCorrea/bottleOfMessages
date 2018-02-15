@@ -273,7 +273,7 @@ def server_Syncronization():
             sync_Content()
         elif WHO_AM_I['order'] == "Worker":
             lastRound = Round_times_Model.last()
-            if (datetime.strptime(
+            diffLastRound = (datetime.strptime(
                     strftime(
                         "%Y-%m-%d %H:%M:%S",
                         gmtime()
@@ -281,7 +281,8 @@ def server_Syncronization():
                     ) - datetime.strptime(
                         lastRound[1],
                         TIME_FORMAT
-                    )) > 3*ROUND_TIME:
+                    )).total_seconds()
+            if diffLastRound > 3*ROUND_TIME:
                 print (' >>>>>>>>>>> The King is dead')
 
 
