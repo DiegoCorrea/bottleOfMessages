@@ -8,6 +8,6 @@ WHO_AM_I = {
 
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'
-ROUND_TIME = 30
-SERVER_DB_PATH = '/db/servers.db'
-APP_DB_PATH = '/db/' + WHO_AM_I['db-name']
+ROUND_TIME = 5
+SERVER_DB_PATH = './db/servers.db'
+APP_DB_PATH = './db/' + WHO_AM_I['db-name']

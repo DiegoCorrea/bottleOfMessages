@@ -12,8 +12,8 @@ import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-import models.servers.default_servers_list as Default_list_Model
-import models.servers.round_times as Round_times_Model
+import models.default_servers_list as Default_list_Model
+import models.round_times as Round_times_Model
 
 from config.server import (
     LIVE_STATUS,
@@ -22,7 +22,7 @@ from config.server import (
 )
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
-sys.path.append('..')
+
 CONNECTION_COUNT = 0
 HIGH_LIST = []
 FIRST_TIME = True

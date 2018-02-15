@@ -4,8 +4,6 @@ import sys
 from time import gmtime, strftime
 from config.server import SERVER_DB_PATH
 
-sys.path.append('..')
-
 
 def all():
     conn = sqlite3.connect(SERVER_DB_PATH)

@@ -12,8 +12,8 @@ import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-import models.servers.default_servers_list as Default_list_Model
-import models.servers.round_times as Round_times_Model
+import models.default_servers_list as Default_list_Model
+import models.round_times as Round_times_Model
 
 from config.server import (
     LIVE_STATUS,
