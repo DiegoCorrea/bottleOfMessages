@@ -67,15 +67,60 @@ def server_sync_Chats(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Chat_Messages(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = ContactController.atRound(
+    allItensToSync = ChatController.messages_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
-    print ('+++ Contacts Total to sync: ', str(len(allItensToSync)))
+    print ('+++ Chats Message Total to sync: ', str(len(allItensToSync)))
     for item in allItensToSync:
         SERVERCONNECTION.root.serverReplaceSendChatMessage(
             _id=item[0],
             chat_id=item[1],
+            sender_id=item[2],
+            message=item[3],
+            created_at=item[4]
+        )
+
+
+def server_sync_Groups(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = GroupController.groups_atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Groups Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceCreateGroup(
+            _id=item[0],
+            group_name=item[1],
+            created_at=item[2]
+        )
+
+
+def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = GroupController.groups_atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Groups Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceCreateGroup(
+            _id=item[0],
+            user_id=item[1],
+            group_id=item[2],
+            created_at=item[3]
+        )
+
+
+def server_sync_Group_Messages(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = GroupController.messages_atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Group Message Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceSendGroupMessage(
+            _id=item[0],
+            group_id=item[1],
             sender_id=item[2],
             message=item[3],
             created_at=item[4]
@@ -129,6 +174,17 @@ def server_Syncronization():
                         _oldRound
                     )
                     server_sync_Chat_Messages(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+                    server_sync_Groups(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+
+                    server_sync_Group_Messages(
                         SERVERCONNECTION,
                         _newRound,
                         _oldRound

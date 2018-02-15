@@ -7,11 +7,11 @@ from config.server import APP_DB_PATH
 
 def create(
     group_name,
-    group_id=None,
+    _id=None,
     created_at=None
 ):
-    if group_id is None:
-        group_id = str(uuid.uuid4())[:8]
+    if _id is None:
+        _id = str(uuid.uuid4())[:8]
     if created_at is None:
         created_at = strftime(
             "%Y-%m-%d %H:%M:%S",
@@ -22,10 +22,10 @@ def create(
     cursor.execute("""
         INSERT INTO groups (id, name, created_at)
         VALUES (?, ?, ?)
-    """, (group_id, group_name, created_at))
+    """, (_id, group_name, created_at))
     conn.commit()
     conn.close()
-    return group_id
+    return _id
 
 
 def findBy_ID(group_id):
@@ -79,8 +79,11 @@ def userGroups(user_id):
 def addUser(
     user_id,
     group_id,
+    _id=None,
     created_at=None
 ):
+    if _id is None:
+        _id = str(uuid.uuid4())
     if created_at is None:
         created_at = strftime(
             "%Y-%m-%d %H:%M:%S",
@@ -89,9 +92,9 @@ def addUser(
     conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO user_groups (user_id, group_id, created_at)
-        VALUES (?, ?, ?)
-    """, (user_id, group_id, created_at))
+        INSERT INTO user_groups (id, user_id, group_id, created_at)
+        VALUES (?, ?, ?, ?)
+    """, (_id, user_id, group_id, created_at))
     conn.commit()
     conn.close()
 
@@ -114,7 +117,15 @@ def getMessages(group_id, limit=20):
     return data
 
 
-def sendMessage(group_id, sender_id, message, created_at=None):
+def sendMessage(
+    group_id,
+    sender_id,
+    message,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())
     if created_at is None:
         created_at = strftime(
             "%Y-%m-%d %H:%M:%S",
@@ -123,9 +134,10 @@ def sendMessage(group_id, sender_id, message, created_at=None):
     conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO group_messages (group_id, sender_id, message, created_at)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO group_messages (id, group_id, sender_id, message, created_at)
+        VALUES (?, ?, ?, ?, ?)
     """, (
+            _id,
             group_id,
             sender_id,
             message,
@@ -134,3 +146,39 @@ def sendMessage(group_id, sender_id, message, created_at=None):
     )
     conn.commit()
     conn.close()
+
+
+def groups_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM groups
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data
+
+
+def messages_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM group_messages
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data

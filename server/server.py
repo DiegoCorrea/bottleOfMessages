@@ -347,38 +347,16 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceCreateGroup(
-        self, user_id, group_name
+        self,
+        _id,
+        group_name,
+        created_at
     ):
-        group_id = GroupController.create(group_name=group_name)
-        GroupController.addUser(user_id=user_id, group_id=group_id)
-
-    @classmethod
-    def broadcast_replaceCreateGroup(self, user_id, group_name):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Create Group] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceCreateGroup(
-                    user_id, group_name
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+        GroupController.create(
+            _id=_id,
+            group_name=group_name,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_createGroup(self, user_id, group_name):
@@ -406,7 +384,6 @@ class ServerService(rpyc.Service):
             }
         GroupController.addUser(user_id=user_id, group_id=group_id)
         logging.info('Finish [CREATE GROUP] - return: @GROUP/DATA')
-        self.broadcast_replaceCreateGroup(user_id, group_name)
         group = GroupController.findBy_ID(group_id=group_id)
         return {
             'type': '@GROUP/DATA',
@@ -458,37 +435,18 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceAddUserToAGroup(
-        self, user_id, group_id
+        self,
+        user_id,
+        group_id,
+        _id,
+        created_at
     ):
-        GroupController.addUser(user_id=user_id, group_id=group_id)
-
-    @classmethod
-    def broadcast_replaceAddUserToAGroup(self, user_id, group_id):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Add User To A Group] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceAddUserToAGroup(
-                    user_id, group_id
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+        GroupController.addUser(
+            _id=_id,
+            user_id=user_id,
+            group_id=group_id,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_addUserToAGroup(self, user_id, group_id):
@@ -515,7 +473,6 @@ class ServerService(rpyc.Service):
             + 'return: self.exposed_getAllUserGroups(user_id)'
         )
         group = GroupController.findBy_ID(group_id=group_id)
-        self.broadcast_replaceAddUserToAGroup(user_id, group_id)
         return {
             'type': '@GROUP/DATA',
             'payload': {
@@ -582,41 +539,20 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceSendGroupMessage(
-        self, user_id, group_id, message
+        self,
+        _id,
+        group_id,
+        sender_id,
+        message,
+        created_at
     ):
         GroupController.sendMessage(
+            _id=_id,
             group_id=group_id,
-            sender_id=user_id,
-            message=message
+            sender_id=sender_id,
+            message=message,
+            created_at=created_at
         )
-
-    @classmethod
-    def broadcast_replaceSendGroupMessage(self, user_id, group_id, message):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Send Chat Message] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceSendGroupMessage(
-                    user_id, group_id, message
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
 
     @classmethod  # this is an exposed method
     def exposed_sendGroupMessage(self, user_id, group_id, message):
@@ -638,11 +574,6 @@ class ServerService(rpyc.Service):
         logging.info(
             'Finish [SEND GROUP MESSAGE] - '
             + 'return: self.exposed_groupMessageHistory(user_id, group_id)'
-        )
-        self.broadcast_replaceSendGroupMessage(
-            group_id=group[0],
-            user_id=user_id,
-            message=message
         )
         return self.exposed_groupMessageHistory(user_id, group_id)
 # ########################################################################## #
