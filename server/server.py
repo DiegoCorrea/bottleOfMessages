@@ -16,7 +16,6 @@ import models.servers.default_servers_list as Default_list_Model
 import models.servers.round_times as Round_times_Model
 
 from config.server import (
-    DEFAULT_SERVERS_LIST,
     LIVE_STATUS,
     DEATH_STATUS,
     WHO_AM_I
