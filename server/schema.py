@@ -31,7 +31,7 @@ print('...Ok!')
 print('Contacts')
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS contacts (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        id CHAR(32) NOT NULL PRIMARY KEY,
         user_id CHAR(64) NOT NULL,
         contact_id CHAR(32) NOT NULL,
         created_at TEXT NOT NULL,
@@ -55,7 +55,7 @@ print('...Ok!')
 print('Chat Message')
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS chat_messages (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        id CHAR(32) NOT NULL PRIMARY KEY,
         chat_id CHAR(32) NOT NULL,
         sender_id CHAR(64) NOT NULL,
         message TEXT NOT NULL,
@@ -78,7 +78,7 @@ print('...Ok!')
 print('Users Groups ')
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS user_groups (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        id CHAR(32) NOT NULL PRIMARY KEY,
         user_id CHAR(64)NOT NULL,
         group_id CHAR(32) NOT NULL,
         created_at TEXT NOT NULL,
@@ -90,7 +90,7 @@ print('...OK!')
 print('Group Messages')
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS group_messages (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        id CHAR(32) NOT NULL PRIMARY KEY,
         sender_id CHAR(64) NOT NULL,
         group_id CHAR(32) NOT NULL,
         created_at TEXT NOT NULL,

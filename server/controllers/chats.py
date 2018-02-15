@@ -2,20 +2,32 @@ import sqlite3
 import uuid
 
 from time import gmtime, strftime
-from config.server import WHO_AM_I
+from config.server import APP_DB_PATH
 
 
-def createChat(user_id, contact_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+def createChat(
+    user_id,
+    contact_id,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO chats (id, user_id, contact_id, created_at)
         VALUES (?, ?, ?, ?)
     """, (
-            str(uuid.uuid4()),
+            _id,
             user_id,
             contact_id,
-            strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            created_at
         )
     )
     conn.commit()
@@ -23,7 +35,7 @@ def createChat(user_id, contact_id):
 
 
 def allUserChat(user_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chats
@@ -40,7 +52,7 @@ def allUserChat(user_id):
 
 
 def getChatWith(user_id, contact_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chats
@@ -56,7 +68,7 @@ def getChatWith(user_id, contact_id):
 
 
 def getMessages(chat_id, limit=20):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM chat_messages
@@ -73,18 +85,68 @@ def getMessages(chat_id, limit=20):
     return data
 
 
-def sendMessage(chat_id, sender_id, message):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+def sendMessage(
+    chat_id,
+    sender_id,
+    message,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO chat_messages (chat_id, sender_id, message, created_at)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO chat_messages (id, chat_id, sender_id, message, created_at)
+        VALUES (?, ?, ?, ?, ?)
     """, (
+            _id,
             chat_id,
             sender_id,
             message,
-            str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+            created_at
         )
     )
     conn.commit()
     conn.close()
+
+
+def chats_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM chats
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data
+
+
+def messages_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM chat_messages
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data

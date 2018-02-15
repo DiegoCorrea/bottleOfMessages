@@ -2,7 +2,7 @@ import sqlite3
 import sys
 
 from time import gmtime, strftime
-from config.server import WHO_AM_I
+from config.server import APP_DB_PATH
 
 sys.path.append('..')
 
@@ -18,7 +18,7 @@ def create(
             gmtime()
         )
     updated_at = created_at
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO users (email, name, created_at, updated_at)
@@ -35,7 +35,7 @@ def create(
 
 
 def findBy_email(email):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM users WHERE email = ?;
@@ -48,7 +48,7 @@ def findBy_email(email):
 
 
 def findBy_ID(user_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM users WHERE email = ?;
@@ -61,7 +61,7 @@ def findBy_ID(user_id):
 
 
 def atRound(_roundStarted, _roundFinished):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM users

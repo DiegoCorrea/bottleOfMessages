@@ -44,9 +44,41 @@ def server_sync_Contacts(SERVERCONNECTION, _newRound, _oldRound):
     print ('+++ Contacts Total to sync: ', str(len(allItensToSync)))
     for item in allItensToSync:
         SERVERCONNECTION.root.serverReplaceAddContact(
-            user_id=item[0],
-            contact_id=item[1],
-            created_at=item[2]
+            _id=item[0],
+            user_id=item[1],
+            contact_id=item[2],
+            created_at=item[3]
+        )
+
+
+def server_sync_Chats(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = ChatController.chats_atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Chats Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceCreateChat(
+            _id=item[0],
+            user_id=item[1],
+            contact_id=item[2],
+            created_at=item[3]
+        )
+
+
+def server_sync_Chat_Messages(SERVERCONNECTION, _newRound, _oldRound):
+    allItensToSync = ContactController.atRound(
+        _roundStarted=_oldRound[1],
+        _roundFinished=_newRound[1]
+    )
+    print ('+++ Contacts Total to sync: ', str(len(allItensToSync)))
+    for item in allItensToSync:
+        SERVERCONNECTION.root.serverReplaceSendChatMessage(
+            _id=item[0],
+            chat_id=item[1],
+            sender_id=item[2],
+            message=item[3],
+            created_at=item[4]
         )
 
 
@@ -87,6 +119,16 @@ def server_Syncronization():
                         _oldRound
                     )
                     server_sync_Contacts(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+                    server_sync_Chats(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
+                    server_sync_Chat_Messages(
                         SERVERCONNECTION,
                         _newRound,
                         _oldRound
