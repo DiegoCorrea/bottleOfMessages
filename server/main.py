@@ -159,82 +159,91 @@ def server_sync_Group_Messages(SERVERCONNECTION, _newRound, _oldRound):
         )
 
 
+def sync_Content():
+    _oldRound = Round_times_Model.last()
+    Round_times_Model.create(
+            _round=(
+                int(
+                    _oldRound[0]
+                ) + 1
+            ),
+            created_at=strftime(
+                "%Y-%m-%d %H:%M:%S",
+                gmtime()
+            )
+    )
+    _newRound = Round_times_Model.last()
+    print ('\n... new round ' + str(_newRound))
+    for server in Workers_list_Model.all():
+        try:
+            SERVERCONNECTION = rpyc.connect(
+                server[1],
+                server[2],
+                config={
+                    'allow_public_attrs': True,
+                    "allow_pickle": True
+                }
+            )
+            vote = SERVERCONNECTION.root.newRound(_newRound)
+            if not vote:
+                print ('\tDiferença no banco')
+            server_sync_Users(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_Contacts(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_Chats(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_Chat_Messages(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_Groups(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_User_Groups(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            server_sync_Group_Messages(
+                SERVERCONNECTION,
+                _newRound,
+                _oldRound
+            )
+            SERVERCONNECTION.close()
+        except(socket.error, AttributeError, EOFError):
+            logging.error(
+                '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
+            )
+            logging.error('Server: ' + server[0])
+            logging.error('IP: ' + server[1])
+            logging.error('Port:' + str(server[2]))
+        print ('')
+
+
+def sync_Servers_list():
+    pass
+
+
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
         if WHO_AM_I["order"] == "King":
             whoIsAlive()
-            _oldRound = Round_times_Model.last()
-            Round_times_Model.create(
-                    _round=(
-                        int(
-                            _oldRound[0]
-                        ) + 1
-                    ),
-                    created_at=strftime(
-                        "%Y-%m-%d %H:%M:%S",
-                        gmtime()
-                    )
-            )
-            _newRound = Round_times_Model.last()
-            print ('\n... new round ' + str(_newRound))
-            for server in Workers_list_Model.all():
-                try:
-                    SERVERCONNECTION = rpyc.connect(
-                        server[1],
-                        server[2],
-                        config={
-                            'allow_public_attrs': True,
-                            "allow_pickle": True
-                        }
-                    )
-                    vote = SERVERCONNECTION.root.newRound(_newRound)
-                    if not vote:
-                        print ('\tDiferença no banco')
-                    server_sync_Users(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_Contacts(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_Chats(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_Chat_Messages(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_Groups(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_User_Groups(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    server_sync_Group_Messages(
-                        SERVERCONNECTION,
-                        _newRound,
-                        _oldRound
-                    )
-                    SERVERCONNECTION.close()
-                except(socket.error, AttributeError, EOFError):
-                    logging.error(
-                        '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
-                    )
-                    logging.error('Server: ' + server[0])
-                    logging.error('IP: ' + server[1])
-                    logging.error('Port:' + str(server[2]))
-                print ('')
+            sync_Servers_list()
+            sync_Content()
 
 
 def setup_logging(
