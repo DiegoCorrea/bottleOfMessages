@@ -5,7 +5,6 @@ import socket
 import time
 import rpyc
 import json
-import sys
 import os
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
@@ -18,8 +17,6 @@ import controllers.contacts as ContactController
 
 import models.default_servers_list as Default_list_Model
 import models.round_times as Round_times_Model
-
-sys.path.append('..')
 
 
 def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
@@ -101,7 +98,7 @@ def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
-    print ('+++ Groups Total to sync: ', str(len(allItensToSync)))
+    print ('+++ User Groups Total to sync: ', str(len(allItensToSync)))
     for item in allItensToSync:
         SERVERCONNECTION.root.serverReplaceCreateGroup(
             _id=item[0],
@@ -144,7 +141,7 @@ def server_Syncronization():
                     )
             )
             _newRound = Round_times_Model.last()
-            print ('&&&&& new round ' + str(_newRound))
+            print ('\n... new round ' + str(_newRound))
             for server in Default_list_Model.all():
                 try:
                     SERVERCONNECTION = rpyc.connect(
@@ -157,7 +154,7 @@ def server_Syncronization():
                     )
                     vote = SERVERCONNECTION.root.newRound(_newRound)
                     if not vote:
-                        print ('Diferença no banco')
+                        print ('\tDiferença no banco')
                     server_sync_Users(
                         SERVERCONNECTION,
                         _newRound,
@@ -183,7 +180,11 @@ def server_Syncronization():
                         _newRound,
                         _oldRound
                     )
-
+                    server_sync_User_Groups(
+                        SERVERCONNECTION,
+                        _newRound,
+                        _oldRound
+                    )
                     server_sync_Group_Messages(
                         SERVERCONNECTION,
                         _newRound,
@@ -197,7 +198,7 @@ def server_Syncronization():
                     logging.error('Server: ' + server[0])
                     logging.error('IP: ' + server[1])
                     logging.error('Port:' + str(server[2]))
-                print ('\n')
+                print ('')
 
 
 def setup_logging(

@@ -5,28 +5,16 @@ import re
 import socket
 import logging
 import collections
-import copy
 
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
-import models.default_servers_list as Default_list_Model
 import models.round_times as Round_times_Model
 
-from config.server import (
-    LIVE_STATUS,
-    DEATH_STATUS,
-    WHO_AM_I
-)
-
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
-
-CONNECTION_COUNT = 0
-HIGH_LIST = []
-FIRST_TIME = True
-ROUND = 0
+sys.path.append('..')
 
 
 class ServerService(rpyc.Service):
@@ -675,8 +663,7 @@ class ServerService(rpyc.Service):
 
     @classmethod  # this is an exposed method
     def exposed_newRound(self, _round):
-        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
-        logging.debug(str(_round))
+        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ' + str(_round))
         lastRound = Round_times_Model.last()
         if _round[0] - lastRound[0] > 1:
             return False
