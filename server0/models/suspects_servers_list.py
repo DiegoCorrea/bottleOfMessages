@@ -5,6 +5,26 @@ from time import gmtime, strftime
 from config.server import SERVER_DB_PATH
 
 
+def create(
+    name,
+    ip,
+    port
+):
+    conn = sqlite3.connect(SERVER_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO suspects_servers_list (name, ip, port)
+        VALUES (?, ?, ?);
+    """, (
+            name,
+            ip,
+            port,
+        )
+    )
+    conn.commit()
+    conn.close()
+
+
 def all():
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
@@ -15,10 +35,13 @@ def all():
     conn.close()
     if itens is None:
         return []
-    data = []
-    for linha in itens:
-        data.append(linha)
-    return data
+    return [
+        {
+            'name': data[0],
+            'ip': data[1],
+            'port': data[2]
+        } for data in itens
+    ]
 
 
 def findBy_name(name):
@@ -31,7 +54,12 @@ def findBy_name(name):
     conn.close()
     if data is None:
         return []
-    return data
+
+    return {
+        'name': data[0],
+        'ip': data[1],
+        'port': data[2]
+    }
 
 
 def breathTime(name, ip, port):

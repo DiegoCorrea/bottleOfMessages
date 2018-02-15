@@ -189,7 +189,7 @@ print('...OK!')
 
 print('Worker Server List')
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS worker_servers_list (
+    CREATE TABLE IF NOT EXISTS workers_servers_list (
         name CHAR(64) NOT NULL,
         ip VARCHAR(32) NOT NULL,
         port INTEGER NOT NULL
@@ -200,7 +200,7 @@ print('...OK!')
 
 print('Suspect Server List')
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS suspect_servers_list (
+    CREATE TABLE IF NOT EXISTS suspects_servers_list (
         name CHAR(64) NOT NULL,
         ip VARCHAR(32) NOT NULL,
         port INTEGER NOT NULL

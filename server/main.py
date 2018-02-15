@@ -27,30 +27,28 @@ def whoIsAlive():
     for server in Default_list_Model.all():
         try:
             SERVERCONNECTION = rpyc.connect(
-                server[1],
-                server[2]
+                server['ip'],
+                server['port']
             )
             SERVERCONNECTION.close()
-            if len(Workers_list_Model.findBy_name(name=server[0])) == 0:
-                Workers_list_Model.employed(
-                    name=server[0],
-                    ip=server[1],
-                    port=server[2]
-                )
-                logging.info(' $$$$$ WORKER: ' + str(server[0]))
+            Workers_list_Model.employed(
+                name=server['name'],
+                ip=server['ip'],
+                port=server['port']
+            )
+            logging.info(' $$$$$ WORKER: ' + str(server['name']))
         except(socket.error, AttributeError, EOFError):
-            if len(Suspects_list_Model.findBy_name(name=server[0])) == 0:
-                Suspects_list_Model.breathTime(
-                    name=server[0],
-                    ip=server[1],
-                    port=server[2]
-                )
+            Suspects_list_Model.breathTime(
+                name=server['name'],
+                ip=server['ip'],
+                port=server['port']
+            )
             logging.error(
                 '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
             )
-            logging.error('Server: ' + server[0])
-            logging.error('IP: ' + server[1])
-            logging.error('Port:' + str(server[2]))
+            logging.error('Server: ' + server['name'])
+            logging.error('IP: ' + server['ip'])
+            logging.error('Port:' + str(server['port']))
         print ('')
 
 
@@ -177,8 +175,8 @@ def sync_Content():
     for server in Workers_list_Model.all():
         try:
             SERVERCONNECTION = rpyc.connect(
-                server[1],
-                server[2],
+                server['ip'],
+                server['port'],
                 config={
                     'allow_public_attrs': True,
                     "allow_pickle": True
@@ -227,14 +225,38 @@ def sync_Content():
             logging.error(
                 '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
             )
-            logging.error('Server: ' + server[0])
-            logging.error('IP: ' + server[1])
-            logging.error('Port:' + str(server[2]))
+            logging.error('Server: ' + server['name'])
+            logging.error('IP: ' + server['ip'])
+            logging.error('Port:' + str(server['port']))
         print ('')
 
 
 def sync_Servers_list():
-    pass
+    for server in Workers_list_Model.all():
+        try:
+            SERVERCONNECTION = rpyc.connect(
+                server['ip'],
+                server['port']
+            )
+            SERVERCONNECTION.root.sync_default_servers(
+                king=WHO_AM_I,
+                servers_list=Default_list_Model.all()
+            )
+            SERVERCONNECTION.root.sync_workers_servers(
+                king=WHO_AM_I,
+                servers_list=Workers_list_Model.all()
+            )
+            SERVERCONNECTION.root.sync_suspects_servers(
+                servers_list=Suspects_list_Model.all()
+            )
+            SERVERCONNECTION.close()
+        except(socket.error, AttributeError, EOFError):
+            logging.error(
+                '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
+            )
+            logging.error('Server: ' + server['name'])
+            logging.error('IP: ' + server['ip'])
+            logging.error('Port:' + str(server['port']))
 
 
 def server_Syncronization():

@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 import rpyc
+import copy
 import sys
 import re
 import socket
 import logging
 import collections
 
+from config.server import WHO_AM_I
+
 import controllers.chats as ChatController
 import controllers.users as UserController
 import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
+import models.default_servers_list as Default_list_Model
+import models.workers_servers_list as Workers_list_Model
+import models.suspects_servers_list as Suspects_list_Model
 import models.round_times as Round_times_Model
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
@@ -681,3 +687,52 @@ class ServerService(rpyc.Service):
                 created_at=_round[1]
         )
         return True
+
+    @classmethod  # this is an exposed method
+    def exposed_sync_default_servers(self, king, servers_list):
+        logging.info(' _____| Replace Default Servers: ' + str(servers_list))
+        Default_list_Model.clean()
+        Default_list_Model.create(
+            name=copy.deepcopy(king['name']),
+            ip=copy.deepcopy(king['ip']),
+            port=copy.deepcopy(king['port'])
+        )
+        for server in copy.deepcopy(servers_list):
+            if server['name'] == WHO_AM_I['name']:
+                return ''
+            Default_list_Model.create(
+                name=server['name'],
+                ip=server['ip'],
+                port=server['port']
+            )
+        for server in Default_list_Model.all():
+            print (str(server))
+
+    @classmethod
+    def exposed_sync_workers_servers(self, king, servers_list):
+        Workers_list_Model.clean()
+        Workers_list_Model.create(
+            name=copy.deepcopy(king['name']),
+            ip=copy.deepcopy(king['ip']),
+            port=copy.deepcopy(king['port'])
+        )
+        for server in copy.deepcopy(servers_list):
+            if server['name'] == WHO_AM_I['name']:
+                return ''
+            Workers_list_Model.create(
+                name=server['name'],
+                ip=server['ip'],
+                port=server['port']
+            )
+
+    @classmethod
+    def exposed_sync_suspects_servers(self, servers_list):
+        Suspects_list_Model.clean()
+        for server in copy.deepcopy(servers_list):
+            if server['name'] == WHO_AM_I['name']:
+                return ''
+            Suspects_list_Model.create(
+                name=server['name'],
+                ip=server['ip'],
+                port=server['port']
+            )
