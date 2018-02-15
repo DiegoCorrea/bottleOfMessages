@@ -663,8 +663,7 @@ class ServerService(rpyc.Service):
 
     @classmethod  # this is an exposed method
     def exposed_newRound(self, _round):
-        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ')
-        logging.debug(str(_round))
+        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ' + str(_round))
         lastRound = Round_times_Model.last()
         if _round[0] - lastRound[0] > 1:
             return False

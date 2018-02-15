@@ -141,7 +141,7 @@ def server_Syncronization():
                     )
             )
             _newRound = Round_times_Model.last()
-            print ('&&&&& new round ' + str(_newRound))
+            print ('\n... new round ' + str(_newRound))
             for server in Default_list_Model.all():
                 try:
                     SERVERCONNECTION = rpyc.connect(
@@ -154,7 +154,7 @@ def server_Syncronization():
                     )
                     vote = SERVERCONNECTION.root.newRound(_newRound)
                     if not vote:
-                        print ('Diferença no banco')
+                        print ('\tDiferença no banco')
                     server_sync_Users(
                         SERVERCONNECTION,
                         _newRound,
@@ -198,7 +198,7 @@ def server_Syncronization():
                     logging.error('Server: ' + server[0])
                     logging.error('IP: ' + server[1])
                     logging.error('Port:' + str(server[2]))
-                print ('\n')
+                print ('')
 
 
 def setup_logging(
