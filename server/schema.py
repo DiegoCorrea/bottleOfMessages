@@ -1,8 +1,11 @@
 import sqlite3
+import sys
 import os
 import inspect
 from time import gmtime, strftime
 from config.server import APP_DB_PATH, SERVER_DB_PATH
+
+sys.path.append('..')
 
 # conectando...
 conn = sqlite3.connect(
@@ -12,11 +15,38 @@ conn = sqlite3.connect(
                 inspect.currentframe()
             )
         )
-    ) + APP_DB_PATH
+    ) + APP_DB_PATH[1:]
 )
 # definindo um cursor
 cursor = conn.cursor()
 
+
+print('Deletando Tabelas se Existe')
+cursor.execute("""
+    DROP TABLE IF EXISTS users;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS contacts;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS chats;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS chat_messages;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS groups;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS user_groups;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS group_messages;
+""")
+print('...Ok!')
+
+
+# #########################################################3 #
 # criando a tabela (schema)
 print('Users')
 cursor.execute("""
@@ -115,10 +145,24 @@ conn = sqlite3.connect(
                 inspect.currentframe()
             )
         )
-    ) + SERVER_DB_PATH
+    ) + SERVER_DB_PATH[1:]
 )
 # definindo um cursor
 cursor = conn.cursor()
+print('Deletando Tabelas de Servers se Existe')
+cursor.execute("""
+    DROP TABLE IF EXISTS default_servers_list;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS worker_servers_list;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS suspect_servers_list;
+""")
+cursor.execute("""
+    DROP TABLE IF EXISTS round_times;
+""")
+print('...Ok!')
 print('Default Server List')
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS default_servers_list (
