@@ -2,24 +2,34 @@ import sqlite3
 import uuid
 
 from time import gmtime, strftime
-from config.server import WHO_AM_I
+from config.server import APP_DB_PATH
 
 
-def create(group_name):
-    group_id = str(uuid.uuid4())[:8]
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+def create(
+    group_name,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())[:8]
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO groups (id, name, created_at)
         VALUES (?, ?, ?)
-    """, (group_id, group_name, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+    """, (_id, group_name, created_at))
     conn.commit()
     conn.close()
-    return group_id
+    return _id
 
 
 def findBy_ID(group_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM groups
@@ -33,7 +43,7 @@ def findBy_ID(group_id):
 
 
 def allUsers(group_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM user_groups
@@ -50,7 +60,7 @@ def allUsers(group_id):
 
 
 def userGroups(user_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM user_groups
@@ -66,19 +76,31 @@ def userGroups(user_id):
     return data
 
 
-def addUser(user_id, group_id):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+def addUser(
+    user_id,
+    group_id,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO user_groups (user_id, group_id, created_at)
-        VALUES (?, ?, ?)
-    """, (user_id, group_id, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+        INSERT INTO user_groups (id, user_id, group_id, created_at)
+        VALUES (?, ?, ?, ?)
+    """, (_id, user_id, group_id, created_at))
     conn.commit()
     conn.close()
 
 
 def getMessages(group_id, limit=20):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM group_messages
@@ -95,18 +117,68 @@ def getMessages(group_id, limit=20):
     return data
 
 
-def sendMessage(group_id, sender_id, message):
-    conn = sqlite3.connect('./db/' + str(WHO_AM_I['db-name']))
+def sendMessage(
+    group_id,
+    sender_id,
+    message,
+    _id=None,
+    created_at=None
+):
+    if _id is None:
+        _id = str(uuid.uuid4())
+    if created_at is None:
+        created_at = strftime(
+            "%Y-%m-%d %H:%M:%S",
+            gmtime()
+        )
+    conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO group_messages (group_id, sender_id, message, created_at)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO group_messages (id, group_id, sender_id, message, created_at)
+        VALUES (?, ?, ?, ?, ?)
     """, (
+            _id,
             group_id,
             sender_id,
             message,
-            str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+            created_at
         )
     )
     conn.commit()
     conn.close()
+
+
+def groups_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM groups
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data
+
+
+def messages_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM group_messages
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data

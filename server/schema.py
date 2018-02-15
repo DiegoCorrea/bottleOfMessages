@@ -2,7 +2,7 @@ import sqlite3
 import os
 import inspect
 from time import gmtime, strftime
-from config.server import WHO_AM_I
+from config.server import APP_DB_PATH, SERVER_DB_PATH
 
 # conectando...
 conn = sqlite3.connect(
@@ -12,7 +12,7 @@ conn = sqlite3.connect(
                 inspect.currentframe()
             )
         )
-    ) + '/db/' + str(WHO_AM_I['db-name'])
+    ) + APP_DB_PATH
 )
 # definindo um cursor
 cursor = conn.cursor()
@@ -115,7 +115,7 @@ conn = sqlite3.connect(
                 inspect.currentframe()
             )
         )
-    ) + '/db/' + 'servers.db'
+    ) + SERVER_DB_PATH
 )
 # definindo um cursor
 cursor = conn.cursor()

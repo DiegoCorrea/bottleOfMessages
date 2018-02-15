@@ -32,56 +32,6 @@ ROUND = 0
 
 class ServerService(rpyc.Service):
 
-    def requireToEnter(self):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.debug("[Require To Enter] - " + str(server['name']))
-                SERVERCONNECTION.root.letMeEnter(WHO_AM_I)
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
-
-    def exposed_letMeEnter(self, newService):
-        global HIGH_LIST
-        HIGH_LIST.append(copy.deepcopy(newService))
-        logging.debug("[Let Me Enter] - New Service" + str(newService['name']))
-
-    def checkServers(self):
-        global HIGH_LIST
-        del HIGH_LIST[:]
-        SERVERCONNECTION = None
-        for server in DEFAULT_SERVERS_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                server['status'] = LIVE_STATUS
-                HIGH_LIST.append(server)
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
-
     def on_connect(self):
         # code that runs when a connection is created
         # (to init the serivce, if needed)
@@ -191,8 +141,23 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod
-    def exposed_serverReplaceCreateChat(self, user_id, contact_id):
-        ChatController.createChat(user_id=user_id, contact_id=contact_id)
+    def exposed_serverReplaceCreateChat(
+        self,
+        _id,
+        user_id,
+        contact_id,
+        created_at
+    ):
+        logging.info(
+            ' _____ Replace Chat: ' + str(user_id)
+            + ' with ' + str(contact_id)
+        )
+        ChatController.createChat(
+            _id=_id,
+            user_id=user_id,
+            contact_id=contact_id,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_createChat(self, user_id, contact_id):
@@ -323,54 +288,20 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceSendChatMessage(
-        self, user_id, contact_id, message
+        self,
+        _id,
+        chat_id,
+        sender_id,
+        message,
+        created_at
     ):
-        chat = ChatController.getChatWith(
-            user_id=user_id,
-            contact_id=contact_id
-        )
-        if len(chat) == 0:
-            ChatController.createChat(
-                user_id=user_id,
-                contact_id=contact_id
-            )
-            chat = ChatController.getChatWith(
-                user_id=user_id,
-                contact_id=contact_id
-            )
         ChatController.sendMessage(
-            chat_id=chat[0],
-            sender_id=user_id,
-            message=message
+            _id=_id,
+            chat_id=chat_id,
+            sender_id=sender_id,
+            message=message,
+            created_at=created_at
         )
-
-    @classmethod
-    def broadcast_replaceSendChatMessage(self, user_id, contact_id, message):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Send Chat Message] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceSendChatMessage(
-                    user_id, contact_id, message
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
 
     @classmethod  # this is an exposed method
     def exposed_sendChatMessage(self, user_id, contact_id, message):
@@ -407,7 +338,6 @@ class ServerService(rpyc.Service):
             'Finish [SEND MESSAGE USER] - '
             + 'return: self.exposed_chatMessageHistory(user_id, contact_id)'
         )
-        self.broadcast_replaceSendChatMessage(user_id, contact_id, message)
         return self.exposed_getChatMessageHistory(user_id, contact_id)
 # ########################################################################## #
 
@@ -417,38 +347,16 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceCreateGroup(
-        self, user_id, group_name
+        self,
+        _id,
+        group_name,
+        created_at
     ):
-        group_id = GroupController.create(group_name=group_name)
-        GroupController.addUser(user_id=user_id, group_id=group_id)
-
-    @classmethod
-    def broadcast_replaceCreateGroup(self, user_id, group_name):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Create Group] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceCreateGroup(
-                    user_id, group_name
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+        GroupController.create(
+            _id=_id,
+            group_name=group_name,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_createGroup(self, user_id, group_name):
@@ -476,7 +384,6 @@ class ServerService(rpyc.Service):
             }
         GroupController.addUser(user_id=user_id, group_id=group_id)
         logging.info('Finish [CREATE GROUP] - return: @GROUP/DATA')
-        self.broadcast_replaceCreateGroup(user_id, group_name)
         group = GroupController.findBy_ID(group_id=group_id)
         return {
             'type': '@GROUP/DATA',
@@ -528,37 +435,18 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceAddUserToAGroup(
-        self, user_id, group_id
+        self,
+        user_id,
+        group_id,
+        _id,
+        created_at
     ):
-        GroupController.addUser(user_id=user_id, group_id=group_id)
-
-    @classmethod
-    def broadcast_replaceAddUserToAGroup(self, user_id, group_id):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Add User To A Group] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceAddUserToAGroup(
-                    user_id, group_id
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
+        GroupController.addUser(
+            _id=_id,
+            user_id=user_id,
+            group_id=group_id,
+            created_at=created_at
+        )
 
     @classmethod  # this is an exposed method
     def exposed_addUserToAGroup(self, user_id, group_id):
@@ -585,7 +473,6 @@ class ServerService(rpyc.Service):
             + 'return: self.exposed_getAllUserGroups(user_id)'
         )
         group = GroupController.findBy_ID(group_id=group_id)
-        self.broadcast_replaceAddUserToAGroup(user_id, group_id)
         return {
             'type': '@GROUP/DATA',
             'payload': {
@@ -652,41 +539,20 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_serverReplaceSendGroupMessage(
-        self, user_id, group_id, message
+        self,
+        _id,
+        group_id,
+        sender_id,
+        message,
+        created_at
     ):
         GroupController.sendMessage(
+            _id=_id,
             group_id=group_id,
-            sender_id=user_id,
-            message=message
+            sender_id=sender_id,
+            message=message,
+            created_at=created_at
         )
-
-    @classmethod
-    def broadcast_replaceSendGroupMessage(self, user_id, group_id, message):
-        global HIGH_LIST
-        SERVERCONNECTION = None
-        for server in HIGH_LIST:
-            try:
-                SERVERCONNECTION = rpyc.connect(
-                    server['ip'],
-                    server['port']
-                )
-                logging.info(
-                    "[Replace Send Chat Message] - Send to -> "
-                    + str(server['name'])
-                )
-                SERVERCONNECTION.root.serverReplaceSendGroupMessage(
-                    user_id, group_id, message
-                )
-                SERVERCONNECTION.close()
-            except(socket.error, AttributeError, EOFError):
-                server['status'] = DEATH_STATUS
-                logging.error(
-                    '+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + + +'
-                )
-                logging.error('Server: ' + server['name'])
-                logging.error('IP: ' + server['ip'])
-                logging.error('Port:' + str(server['port']))
-                logging.error('Status: ' + server['status'])
 
     @classmethod  # this is an exposed method
     def exposed_sendGroupMessage(self, user_id, group_id, message):
@@ -709,11 +575,6 @@ class ServerService(rpyc.Service):
             'Finish [SEND GROUP MESSAGE] - '
             + 'return: self.exposed_groupMessageHistory(user_id, group_id)'
         )
-        self.broadcast_replaceSendGroupMessage(
-            group_id=group[0],
-            user_id=user_id,
-            message=message
-        )
         return self.exposed_groupMessageHistory(user_id, group_id)
 # ########################################################################## #
 
@@ -722,9 +583,19 @@ class ServerService(rpyc.Service):
 # ########################################################################## #
 
     @classmethod
-    def exposed_serverReplaceAddContact(self, user_id, contact_id, created_at):
-        logging.info(' _____ Replace Contacts: ' + str(user_id))
+    def exposed_serverReplaceAddContact(
+        self,
+        _id,
+        user_id,
+        contact_id,
+        created_at
+    ):
+        logging.info(
+            ' _____ Replace Contacts: ' + str(user_id)
+            + ' To ' + str(contact_id)
+        )
         ContactController.create(
+            _id=_id,
             user_id=user_id,
             contact_id=contact_id,
             created_at=created_at
