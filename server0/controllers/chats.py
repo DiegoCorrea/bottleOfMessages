@@ -27,7 +27,7 @@ def createChat(
             _id,
             user_id,
             contact_id,
-            created_at
+            created_at,
         )
     )
     conn.commit()

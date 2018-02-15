@@ -26,7 +26,7 @@ def create(
     cursor.execute("""
         INSERT INTO contacts (id, user_id, contact_id, created_at)
         VALUES (?, ?, ?, ?);
-    """, (_id, user_id, contact_id, created_at))
+    """, (_id, user_id, contact_id, created_at,))
     conn.commit()
     conn.close()
 

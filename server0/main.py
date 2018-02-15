@@ -94,7 +94,7 @@ def server_sync_Groups(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = GroupController.groups_atRound(
+    allItensToSync = GroupController.usersAdd_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )

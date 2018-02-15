@@ -166,6 +166,24 @@ def groups_atRound(_roundStarted, _roundFinished):
     return data
 
 
+def usersAdd_atRound(_roundStarted, _roundFinished):
+    conn = sqlite3.connect(APP_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM user_groups
+        WHERE created_at BETWEEN ? AND ?;
+    """, (_roundStarted, _roundFinished, )
+    )
+    itens = cursor.fetchall()
+    conn.close()
+    if itens is None:
+        return []
+    data = []
+    for linha in itens:
+        data.append(linha)
+    return data
+
+
 def messages_atRound(_roundStarted, _roundFinished):
     conn = sqlite3.connect(APP_DB_PATH)
     cursor = conn.cursor()

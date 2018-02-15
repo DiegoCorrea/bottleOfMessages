@@ -696,8 +696,6 @@ def createChat(email):
 
 def printChatMessages(contact_id):
     global STORE
-    print ('=================')
-    print (STORE['chats'][contact_id])
     printChat(STORE['chats'][contact_id])
     if len(STORE['chats']) > 0 and len(STORE['chats'][contact_id]['messages']) > 0:
         for message in STORE['chats'][contact_id]['messages']:
@@ -754,8 +752,6 @@ def remoteGetChatMessages(contact_id):
             user_id=STORE['user']['email'],
             contact_id=contact_id
         )
-        print ('!!!!!!!!!!!!!!!!!')
-        print (data)
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError, TypeError):
         return {
