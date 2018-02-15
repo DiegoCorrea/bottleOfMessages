@@ -16,7 +16,42 @@ import controllers.groups as GroupController
 import controllers.contacts as ContactController
 
 import models.default_servers_list as Default_list_Model
+import models.workers_servers_list as Workers_list_Model
+import models.suspects_servers_list as Suspects_list_Model
 import models.round_times as Round_times_Model
+
+
+def whoIsAlive():
+    Workers_list_Model.clean()
+    Suspects_list_Model.clean()
+    for server in Default_list_Model.all():
+        try:
+            SERVERCONNECTION = rpyc.connect(
+                server[1],
+                server[2]
+            )
+            SERVERCONNECTION.close()
+            if len(Workers_list_Model.findBy_name(name=server[0])) == 0:
+                Workers_list_Model.employed(
+                    name=server[0],
+                    ip=server[1],
+                    port=server[2]
+                )
+                logging.info(' $$$$$ WORKER: ' + str(server[0]))
+        except(socket.error, AttributeError, EOFError):
+            if len(Suspects_list_Model.findBy_name(name=server[0])) == 0:
+                Suspects_list_Model.breathTime(
+                    name=server[0],
+                    ip=server[1],
+                    port=server[2]
+                )
+            logging.error(
+                '+ + + + + + + + [CONNECTION ERROR] + + + + + + + +'
+            )
+            logging.error('Server: ' + server[0])
+            logging.error('IP: ' + server[1])
+            logging.error('Port:' + str(server[2]))
+        print ('')
 
 
 def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
@@ -128,6 +163,7 @@ def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
         if WHO_AM_I["order"] == "King":
+            whoIsAlive()
             _oldRound = Round_times_Model.last()
             Round_times_Model.create(
                     _round=(
@@ -142,7 +178,7 @@ def server_Syncronization():
             )
             _newRound = Round_times_Model.last()
             print ('\n... new round ' + str(_newRound))
-            for server in Default_list_Model.all():
+            for server in Workers_list_Model.all():
                 try:
                     SERVERCONNECTION = rpyc.connect(
                         server[1],
