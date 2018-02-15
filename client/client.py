@@ -5,6 +5,7 @@ import os
 import rpyc
 import re
 import socket
+import copy
 
 rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
 LIVE_STATUS = 'live'
@@ -441,6 +442,7 @@ def remoteGetGroupMessages(group_id):
 
 
 def getGroupMessages(group_id):
+    global STORE
     data = remoteGetGroupMessages(group_id)
     if data['type'] == '@USER/NOTFOUND':
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
@@ -663,7 +665,7 @@ def remoteCreateChat(contact_id):
             user_id=STORE['user']['email'],
             contact_id=contact_id
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -682,8 +684,13 @@ def createChat(email):
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: Connection Error!')
         return ''
+    if data['type'] == '@CHAT/MESSAGE/ZERO':
+        print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
+        print('\tMessage: No messages yet!')
+        return ''
     if data['type'] == '@CHAT/DATA':
-        STORE['chats'][data['payload']['id']] = data['payload']
+        STORE['chats'][data['payload']['email']] = copy.deepcopy(data['payload'])
+        return copy.deepcopy(data['payload'])
 # #############################################################################
 
 
@@ -715,7 +722,7 @@ def remoteSendChatMessage(contact_id, message):
             contact_id=contact_id,
             message=message
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -738,7 +745,7 @@ def sendChatMessage(contact_id, message):
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: Connection Error!')
         return ''
-    STORE['chats'][contact_id]['messages'] = data['payload']
+    STORE['chats'][contact_id]['messages'] = copy.deepcopy(data['payload'])
 
 
 def remoteGetChatMessages(contact_id):
@@ -747,7 +754,9 @@ def remoteGetChatMessages(contact_id):
             user_id=STORE['user']['email'],
             contact_id=contact_id
         )
-        return data
+        print ('!!!!!!!!!!!!!!!!!')
+        print (data)
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError, TypeError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -778,7 +787,7 @@ def getChatMessages(contact_id):
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: Server Error')
         return ''
-    STORE['chats'][contact_id]['messages'] = data['payload']
+    STORE['chats'][contact_id]['messages'] = copy.deepcopy(data['payload'])
 
 
 def screenContactChat():
@@ -844,7 +853,7 @@ def remoteGetAllUserChats():
         data = SERVERCONNECTION.root.getAllUserChats(
             user_id=STORE['user']['email']
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -864,7 +873,7 @@ def getUserChats():
         print('\tMessage: Connection Error!')
         return ''
     if data['type'] == '@CHAT/DATA':
-        STORE['chats'] = data['payload']
+        STORE['chats'] = copy.deepcopy(data['payload'])
 # #############################################################################
 
 
