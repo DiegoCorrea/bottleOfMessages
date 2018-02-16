@@ -1,13 +1,13 @@
+KING = "King"
+WORKER = "Worker"
 WHO_AM_I = {
     "name": "Hermes",
     "db-name": 'Hermes.db',
     "ip": "127.0.0.1",
     "port": 27000,
+    "position": KING,
     "succession_order": 0
 }
-
-KING = "King"
-WORKER = "Worker"
 
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'

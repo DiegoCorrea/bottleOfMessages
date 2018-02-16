@@ -689,18 +689,9 @@ class ServerService(rpyc.Service):
         return True
 
     @classmethod  # this is an exposed method
-    def exposed_sync_default_servers(self, king, servers_list):
+    def exposed_sync_default_servers(self, servers_list):
         Default_list_Model.clean()
-        Default_list_Model.create(
-            name=copy.deepcopy(king['name']),
-            ip=copy.deepcopy(king['ip']),
-            port=copy.deepcopy(king['port']),
-            succession_order=copy.deepcopy(king['succession_order'])
-        )
-        logging.info(' _____| Replace Default King: ' + str(king))
         for server in copy.deepcopy(servers_list):
-            if server['name'] == WHO_AM_I['name']:
-                continue
             Default_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],

@@ -90,3 +90,36 @@ def clean():
     """, )
     conn.commit()
     conn.close()
+
+
+def first():
+    def last():
+        conn = sqlite3.connect(SERVER_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM workers_servers_list
+            ORDER BY succession_order ASC LIMIT 1;
+        """)
+        data = cursor.fetchone()
+        conn.close()
+        if data is None:
+            return []
+        return data
+
+
+def findBy_succession_order(succession_order):
+    conn = sqlite3.connect(SERVER_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM workers_servers_list WHERE succession_order = ?;
+    """, (succession_order,))
+    data = cursor.fetchone()
+    conn.close()
+    if data is None:
+        return []
+    return {
+        'name': data[0],
+        'ip': data[1],
+        'port': data[2],
+        'succession_order': data[3]
+    }

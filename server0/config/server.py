@@ -1,13 +1,13 @@
+KING = "King"
+WORKER = "Worker"
 WHO_AM_I = {
     "name": "Thot",
     "db-name": 'Thot.db',
     "ip": "127.0.0.1",
     "port": 27001,
+    "position": WORKER,
     "succession_order": 1
 }
-
-KING = "King"
-WORKER = "Worker"
 
 LIVE_STATUS = 'live'
 DEATH_STATUS = 'dinosaur'

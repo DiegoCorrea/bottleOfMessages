@@ -13,7 +13,7 @@ from time import gmtime, strftime
 from server import ServerService
 from rpyc.utils.server import ThreadedServer
 
-from config.server import WHO_AM_I, ROUND_TIME, TIME_FORMAT
+from config.server import WHO_AM_I, ROUND_TIME, TIME_FORMAT, KING, WORKER
 
 import controllers.chats as ChatController
 import controllers.users as UserController
@@ -30,6 +30,8 @@ def whoIsAlive():
     Workers_list_Model.clean()
     Suspects_list_Model.clean()
     for server in Default_list_Model.all():
+        if WHO_AM_I['name'] == server['name']:
+            continue
         try:
             SERVERCONNECTION = rpyc.connect(
                 server['ip'],
@@ -54,7 +56,6 @@ def whoIsAlive():
             logging.error('Server: ' + server['name'])
             logging.error('IP: ' + server['ip'])
             logging.error('Port:' + str(server['port']))
-        print ('')
 
 
 def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
@@ -244,7 +245,6 @@ def sync_Servers_list():
                 server['port']
             )
             SERVERCONNECTION.root.sync_default_servers(
-                king=WHO_AM_I,
                 servers_list=Default_list_Model.all()
             )
             SERVERCONNECTION.root.sync_workers_servers(
@@ -264,14 +264,42 @@ def sync_Servers_list():
             logging.error('Port:' + str(server['port']))
 
 
+def election():
+    votes = [server['succession_order'] for server in Workers_list_Model.all()]
+    votes.sort()
+    if votes[0] > WHO_AM_I['succession_order']:
+        WHO_AM_I['position'] = KING
+    else
+        WHO_AM_I['position'] = WORKER
+
+
+def theKingdom():
+    king = Workers_list_Model.first()
+    try:
+        SERVERCONNECTION = rpyc.connect(
+            king['ip'],
+            king['port']
+        )
+        SERVERCONNECTION.close()
+        return False
+    except(socket.error, AttributeError, EOFError):
+        logging.error(
+            '+ + + + + + + + [KING IS OFFICIAL DEAD] + + + + + + + +'
+        )
+        logging.error('Server: ' + king['name'])
+        logging.error('IP: ' + king['ip'])
+        logging.error('Port:' + str(king['port']))
+        return True
+
+
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
-        if WHO_AM_I["succession_order"] == 0:
+        if WHO_AM_I["position"] == KING:
             whoIsAlive()
             sync_Servers_list()
             sync_Content()
-        elif WHO_AM_I['succession_order'] > 1:
+        elif WHO_AM_I['position'] == WORKER:
             lastRound = Round_times_Model.last()
             diffLastRound = (datetime.strptime(
                     strftime(
@@ -283,7 +311,10 @@ def server_Syncronization():
                         TIME_FORMAT
                     )).total_seconds()
             if diffLastRound > 3*ROUND_TIME:
-                print (' >>>>>>>>>>> The King is dead')
+                print (' >>>>>>>>>>> WHERE IS THE KING?')
+                if (theKingdom()):
+                    whoIsAlive()
+                    election()
 
 
 def setup_logging(
