@@ -15,10 +15,10 @@ from rpyc.utils.server import ThreadedServer
 
 from config.server import WHO_AM_I, ROUND_TIME, TIME_FORMAT, KING, WORKER
 
-import controllers.chats as ChatController
-import controllers.users as UserController
-import controllers.groups as GroupController
-import controllers.contacts as ContactController
+import models.chats as ChatModel
+import models.users as UserModel
+import models.groups as GroupModel
+import models.contacts as ContactModel
 
 import models.default_servers_list as Default_list_Model
 import models.workers_servers_list as Workers_list_Model
@@ -27,7 +27,7 @@ import models.round_times as Round_times_Model
 
 
 def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = UserController.atRound(
+    allItensToSync = UserModel.atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -41,7 +41,7 @@ def server_sync_Users(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Contacts(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = ContactController.atRound(
+    allItensToSync = ContactModel.atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -56,7 +56,7 @@ def server_sync_Contacts(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Chats(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = ChatController.chats_atRound(
+    allItensToSync = ChatModel.chats_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -71,7 +71,7 @@ def server_sync_Chats(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Chat_Messages(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = ChatController.messages_atRound(
+    allItensToSync = ChatModel.messages_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -87,7 +87,7 @@ def server_sync_Chat_Messages(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Groups(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = GroupController.groups_atRound(
+    allItensToSync = GroupModel.groups_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -101,7 +101,7 @@ def server_sync_Groups(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = GroupController.usersAdd_atRound(
+    allItensToSync = GroupModel.usersAdd_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -116,7 +116,7 @@ def server_sync_User_Groups(SERVERCONNECTION, _newRound, _oldRound):
 
 
 def server_sync_Group_Messages(SERVERCONNECTION, _newRound, _oldRound):
-    allItensToSync = GroupController.messages_atRound(
+    allItensToSync = GroupModel.messages_atRound(
         _roundStarted=_oldRound[1],
         _roundFinished=_newRound[1]
     )
@@ -157,43 +157,44 @@ def start():
                     "allow_pickle": True
                 }
             )
-            vote = SERVERCONNECTION.root.newRound(_newRound)
-            if not vote:
-                print ('\tDiferença no banco')
+            workerLastRound = SERVERCONNECTION.root.lastRoundSync()
+            if workerLastRound[0] == 0:
+                workerLastRound = Round_times_Model.first()
+            SERVERCONNECTION.root.newRound(_newRound)
             server_sync_Users(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Contacts(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Chats(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Chat_Messages(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Groups(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_User_Groups(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Group_Messages(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             SERVERCONNECTION.close()
         except(socket.error, AttributeError, EOFError):

@@ -678,15 +678,13 @@ class ServerService(rpyc.Service):
 
     @classmethod  # this is an exposed method
     def exposed_newRound(self, _round):
-        logging.info(' +++++ SYNCRONIZATION - NEW ROUND +++++ ' + str(_round))
-        lastRound = Round_times_Model.last()
-        if _round[0] - lastRound[0] > 1:
-            return False
+        logging.info(
+            ' +++++ | SYNCRONIZATION - NEW ROUND | +++++ ' + str(_round)
+        )
         Round_times_Model.create(
                 _round=_round[0],
                 created_at=_round[1]
         )
-        return True
 
     @classmethod  # this is an exposed method
     def exposed_sync_default_servers(self, servers_list):

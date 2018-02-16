@@ -157,43 +157,44 @@ def start():
                     "allow_pickle": True
                 }
             )
-            vote = SERVERCONNECTION.root.newRound(_newRound)
-            if not vote:
-                print ('\tDiferença no banco')
+            workerLastRound = SERVERCONNECTION.root.lastRoundSync()
+            if workerLastRound[0] == 0:
+                workerLastRound = Round_times_Model.first()
+            SERVERCONNECTION.root.newRound(_newRound)
             server_sync_Users(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Contacts(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Chats(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Chat_Messages(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Groups(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_User_Groups(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             server_sync_Group_Messages(
                 SERVERCONNECTION,
                 _newRound,
-                _oldRound
+                workerLastRound
             )
             SERVERCONNECTION.close()
         except(socket.error, AttributeError, EOFError):

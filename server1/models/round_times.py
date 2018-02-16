@@ -41,6 +41,20 @@ def all():
     return data
 
 
+def first():
+    conn = sqlite3.connect(SERVER_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM round_times
+        ORDER BY _round ASC LIMIT 1;
+    """)
+    data = cursor.fetchone()
+    conn.close()
+    if data is None:
+        return []
+    return data
+
+
 def last():
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()

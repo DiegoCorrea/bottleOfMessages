@@ -174,17 +174,20 @@ def exitProgramWithError(errorKey):
 def startConnectWithServers():
     global SERVERCONNECTION
     global CONFIG
+    SERVERS = None
     for server in CONFIG['servers']:
         try:
             SERVERCONNECTION = rpyc.connect(
                 server['ip'],
                 server['port']
             )
-            CONFIG['servers'] = copy.deepcopy(SERVERCONNECTION.root.getServerList())
+            SERVERS = copy.deepcopy(SERVERCONNECTION.root.getServerList())
             SERVERCONNECTION.close()
             break
         except (socket.error, AttributeError):
             continue
+        print(str(SERVERS))
+    CONFIG['servers'] = copy.deepcopy(SERVERS)
     for server in CONFIG['servers']:
         try:
             SERVERCONNECTION = rpyc.connect(
@@ -192,6 +195,7 @@ def startConnectWithServers():
                 server['port']
             )
             if not SERVERCONNECTION.root.isKing():
+                SERVERCONNECTION.close()
                 continue
             CONFIG['connected'] = True
             server['status'] = LIVE_STATUS
@@ -202,6 +206,7 @@ def startConnectWithServers():
             print ('Port:' + str(server['port']))
             print ("\n\nLoad the program...")
             sleep(3)
+            return ''
         except (socket.error, AttributeError):
             server['status'] = DEATH_STATUS
             print ('+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +')
@@ -213,6 +218,7 @@ def startConnectWithServers():
                 print ("- Try again in: " + str(3-i))
                 sleep(1)
                 print ('\r', end='')
+        exitProgramWithError()
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
@@ -227,6 +233,7 @@ def remoteGetAllUserGroups():
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -280,6 +287,7 @@ def remoteAddUserToAGroup(group_id):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {
@@ -327,6 +335,7 @@ def remoteCreateGroup(group_name):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -398,6 +407,7 @@ def remoteSendGroupMessage(group_id, message):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -439,6 +449,7 @@ def remoteGetGroupMessages(group_id):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError, TypeError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -569,6 +580,7 @@ def remoteGetAllUserContacts():
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -671,6 +683,7 @@ def remoteCreateChat(contact_id):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -726,6 +739,7 @@ def remoteSendChatMessage(contact_id, message):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -758,6 +772,7 @@ def remoteGetChatMessages(contact_id):
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError, TypeError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -833,7 +848,7 @@ def printAllChats():
     global STORE
     if len(STORE['chats']) > 0:
         for chat in STORE['chats']:
-            printChat(STORE['chats'][chat])
+            printChat(chat)
     else:
         print('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print('\tMessage: You have not chat yet')
@@ -855,6 +870,7 @@ def remoteGetAllUserChats():
         )
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -931,7 +947,7 @@ def remoteLogOnSystem(email):
         data = SERVERCONNECTION.root.userLogin(user_id=email)
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
-        print('+++ Erro: ')
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
@@ -959,6 +975,7 @@ def remoteCreateUser(email, name):
         data = SERVERCONNECTION.root.createUser(email=email, name=name)
         return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
+        startConnectWithServers()
         return {
             'type': 'ERROR/CONNECTION',
             'payload': {}
