@@ -14,7 +14,7 @@ def create(
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO suspects_servers_list (name, ip, port)
-        VALUES (?, ?, ?, ?);
+        VALUES (?, ?, ?);
     """, (
             name,
             ip,
