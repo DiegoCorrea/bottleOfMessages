@@ -115,7 +115,7 @@ def theKingIsAlive():
             king['port']
         )
         SERVERCONNECTION.close()
-        return False
+        return True
     except(socket.error, AttributeError, EOFError):
         logging.error(
             '+ + + + + + + + [KING IS OFFICIAL DEAD] + + + + + + + +'
@@ -123,9 +123,9 @@ def theKingIsAlive():
         logging.error('Server: ' + king['name'])
         logging.error('IP: ' + king['ip'])
         logging.error('Port:' + str(king['port']))
-        return True
+        return False
     except(TypeError):
         logging.error(
             '+ + + + + + + + [THE FIRST KING] + + + + + + + +'
         )
-        return True
+        return False
