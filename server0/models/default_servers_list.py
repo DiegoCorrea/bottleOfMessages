@@ -27,6 +27,24 @@ def create(
     conn.close()
 
 
+def findBy_name(name):
+    conn = sqlite3.connect(SERVER_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM default_servers_list WHERE name = ?;
+    """, (name,))
+    data = cursor.fetchone()
+    conn.close()
+    if data is None:
+        return []
+    return {
+        'name': data[0],
+        'ip': data[1],
+        'port': data[2],
+        'succession_order': data[3]
+    }
+
+
 def all():
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()

@@ -745,3 +745,21 @@ class ServerService(rpyc.Service):
     @classmethod
     def exposed_getServerList(self):
         return Default_list_Model.all()
+
+    @classmethod
+    def exposed_newWorker(self, identification):
+        if len(Default_list_Model.findBy_name(
+            name=identification['name'])
+        ) > 0:
+            return False
+        Default_list_Model.create(
+            name=identification['name'],
+            ip=identification['ip'],
+            port=identification['port'],
+            succession_order=identification['succession_order']
+        )
+        return True
+
+    @classmethod
+    def exposed_lastRoundSync(self):
+        return Round_times_Model.last()
