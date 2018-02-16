@@ -14,13 +14,12 @@ def create(
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO suspects_servers_list (name, ip, port, succession_order)
+        INSERT INTO suspects_servers_list (name, ip, port)
         VALUES (?, ?, ?, ?);
     """, (
             name,
             ip,
             port,
-            succession_order,
         )
     )
     conn.commit()
@@ -41,8 +40,7 @@ def all():
         {
             'name': data[0],
             'ip': data[1],
-            'port': data[2],
-            'succession_order': data[3]
+            'port': data[2]
         } for data in itens
     ]
 
@@ -61,22 +59,20 @@ def findBy_name(name):
     return {
         'name': data[0],
         'ip': data[1],
-        'port': data[2],
-        'succession_order': data[3]
+        'port': data[2]
     }
 
 
-def breathTime(name, ip, port, succession_order):
+def breathTime(name, ip, port):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO suspects_servers_list (name, ip, port, succession_order)
-        VALUES (?, ?, ?, ?);
+        INSERT INTO suspects_servers_list (name, ip, port)
+        VALUES (?, ?, ?);
     """, (
             name,
             ip,
             port,
-            succession_order,
         )
     )
     conn.commit()

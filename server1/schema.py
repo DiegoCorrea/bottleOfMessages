@@ -176,7 +176,7 @@ conn.commit()
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('127.0.0.1', 'Thot', 27001, 0);
+        VALUES ('127.0.0.1', 'Thot', 27000, 0);
 """)
 conn.commit()
 

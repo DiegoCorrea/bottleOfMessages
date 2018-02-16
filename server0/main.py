@@ -38,10 +38,12 @@ def whoIsAlive():
                 server['port']
             )
             SERVERCONNECTION.close()
+            print(str(server))
             Workers_list_Model.employed(
                 name=server['name'],
                 ip=server['ip'],
-                port=server['port']
+                port=server['port'],
+                succession_order=server["succession_order"]
             )
             logging.info(' $$$$$ WORKER: ' + str(server['name']))
         except(socket.error, AttributeError, EOFError):
@@ -269,7 +271,7 @@ def election():
     votes.sort()
     if votes[0] > WHO_AM_I['succession_order']:
         WHO_AM_I['position'] = KING
-    else
+    else:
         WHO_AM_I['position'] = WORKER
 
 
@@ -289,6 +291,11 @@ def theKingdom():
         logging.error('Server: ' + king['name'])
         logging.error('IP: ' + king['ip'])
         logging.error('Port:' + str(king['port']))
+        return True
+    except(TypeError):
+        logging.error(
+            '+ + + + + + + + [THE FIRST KING] + + + + + + + +'
+        )
         return True
 
 

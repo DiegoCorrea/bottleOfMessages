@@ -39,7 +39,8 @@ def all():
         {
             'name': data[0],
             'ip': data[1],
-            'port': data[2]
+            'port': data[2],
+            'succession_order': data[3]
         } for data in itens
     ]
 
