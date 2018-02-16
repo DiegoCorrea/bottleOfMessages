@@ -157,13 +157,12 @@ def exitProgramWithSuccess():
         exitProgramWithError()
 
 
-def exitProgramWithError(errorKey):
+def exitProgramWithError():
     os.system('cls||clear')
-    if errorKey == '@SERVER/NO_CONNECTION':
-        print('# ################################### #')
-        print('# Sorry! All server is down           #')
-        print('# ################################### #')
-    exit()
+    print('# ################################### #')
+    print('# Sorry! All server is down           #')
+    print('# ################################### #')
+    exit(1)
 # ########################################################################### #
 # ########################################################################### #
 # ######################## Server Connection Functions ###################### #
@@ -218,7 +217,7 @@ def startConnectWithServers():
                 print ("- Try again in: " + str(3-i))
                 sleep(1)
                 print ('\r', end='')
-        exitProgramWithError()
+    exitProgramWithError()
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
