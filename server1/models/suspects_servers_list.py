@@ -8,8 +8,7 @@ from config.server import SERVER_DB_PATH
 def create(
     name,
     ip,
-    port,
-    succession_order
+    port
 ):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()

@@ -8,17 +8,19 @@ from config.server import SERVER_DB_PATH
 def create(
     name,
     ip,
-    port
+    port,
+    succession_order
 ):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO default_servers_list (name, ip, port)
-        VALUES (?, ?, ?);
+        INSERT INTO default_servers_list (name, ip, port,succession_order)
+        VALUES (?, ?, ?, ?);
     """, (
             name,
             ip,
             port,
+            succession_order,
         )
     )
     conn.commit()

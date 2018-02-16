@@ -27,6 +27,7 @@ import models.round_times as Round_times_Model
 
 
 def whoIsAlive():
+    logging.info(" **************** How is Alive?")
     Workers_list_Model.clean()
     Suspects_list_Model.clean()
     for server in Default_list_Model.all():
@@ -45,7 +46,7 @@ def whoIsAlive():
                 port=server['port'],
                 succession_order=server["succession_order"]
             )
-            logging.info(' $$$$$ WORKER: ' + str(server['name']))
+            logging.info(' $$$$$ ALIVE: ' + str(server['name']))
         except(socket.error, AttributeError, EOFError):
             Suspects_list_Model.breathTime(
                 name=server['name'],
@@ -267,11 +268,15 @@ def sync_Servers_list():
 
 
 def election():
-    votes = [server['succession_order'] for server in Workers_list_Model.all()]
-    votes.sort()
+    votes = sorted([server['succession_order'] for server in Workers_list_Model.all()])
+    print ('votes: '+str(votes))
+    if len(votes) == 0:
+        return ''
     if votes[0] > WHO_AM_I['succession_order']:
+        logging.info('I AM THE NEW KING')
         WHO_AM_I['position'] = KING
     else:
+        logging.info('WORK WORK WORK')
         WHO_AM_I['position'] = WORKER
 
 
