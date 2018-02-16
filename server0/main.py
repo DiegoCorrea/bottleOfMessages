@@ -267,11 +267,11 @@ def sync_Servers_list():
 def server_Syncronization():
     while True:
         time.sleep(ROUND_TIME)
-        if WHO_AM_I["order"] == "King":
+        if WHO_AM_I["succession_order"] == 0:
             whoIsAlive()
             sync_Servers_list()
             sync_Content()
-        elif WHO_AM_I['order'] == "Worker":
+        elif WHO_AM_I['succession_order'] > 1:
             lastRound = Round_times_Model.last()
             diffLastRound = (datetime.strptime(
                     strftime(

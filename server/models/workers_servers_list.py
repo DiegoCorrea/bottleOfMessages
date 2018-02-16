@@ -8,17 +8,19 @@ from config.server import SERVER_DB_PATH
 def create(
     name,
     ip,
-    port
+    port,
+    succession_order
 ):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO workers_servers_list (name, ip, port)
-        VALUES (?, ?, ?);
+        INSERT INTO workers_servers_list (name, ip, port, succession_order)
+        VALUES (?, ?, ?, ?);
     """, (
             name,
             ip,
             port,
+            succession_order,
         )
     )
     conn.commit()
@@ -39,7 +41,8 @@ def all():
         {
             'name': data[0],
             'ip': data[1],
-            'port': data[2]
+            'port': data[2],
+            'succession_order': data[3]
         } for data in itens
     ]
 
@@ -57,20 +60,22 @@ def findBy_name(name):
     return {
         'name': data[0],
         'ip': data[1],
-        'port': data[2]
+        'port': data[2],
+        'succession_order': data[3]
     }
 
 
-def employed(name, ip, port):
+def employed(name, ip, port, succession_order):
     conn = sqlite3.connect(SERVER_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO workers_servers_list (name, ip, port)
-        VALUES (?, ?, ?);
+        INSERT INTO workers_servers_list (name, ip, port, succession_order)
+        VALUES (?, ?, ?, ?);
     """, (
             name,
             ip,
             port,
+            succession_order,
         )
     )
     conn.commit()

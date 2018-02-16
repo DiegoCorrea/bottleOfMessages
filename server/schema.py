@@ -167,22 +167,23 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS default_servers_list (
         name CHAR(64) NOT NULL,
         ip VARCHAR(32) NOT NULL,
-        port INTEGER NOT NULL
+        port INTEGER NOT NULL,
+        succession_order INTEGER NOT NULL
     );
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
-        (ip, name, port)
-        VALUES ('127.0.0.1', 'Thot', 27001);
+        (ip, name, port, succession_order)
+        VALUES ('127.0.0.1', 'Thot', 27001, 1);
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
-        (ip, name, port)
-        VALUES ('127.0.0.1', 'Exu', 27002);
+        (ip, name, port, succession_order)
+        VALUES ('127.0.0.1', 'Exu', 27002, 2);
 """)
 conn.commit()
 print('...OK!')
@@ -192,7 +193,8 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS workers_servers_list (
         name CHAR(64) NOT NULL,
         ip VARCHAR(32) NOT NULL,
-        port INTEGER NOT NULL
+        port INTEGER NOT NULL,
+        succession_order INTEGER NOT NULL
     );
 """)
 conn.commit()

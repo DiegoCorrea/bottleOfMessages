@@ -3,7 +3,7 @@ WHO_AM_I = {
     "db-name": 'Thot.db',
     "ip": "127.0.0.1",
     "port": 27001,
-    "order": "Worker"
+    "succession_order": 1
 }
 
 KING = "King"

@@ -694,7 +694,8 @@ class ServerService(rpyc.Service):
         Default_list_Model.create(
             name=copy.deepcopy(king['name']),
             ip=copy.deepcopy(king['ip']),
-            port=copy.deepcopy(king['port'])
+            port=copy.deepcopy(king['port']),
+            succession_order=copy.deepcopy(king['succession_order'])
         )
         logging.info(' _____| Replace Default King: ' + str(king))
         for server in copy.deepcopy(servers_list):
@@ -703,7 +704,8 @@ class ServerService(rpyc.Service):
             Default_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],
-                port=server['port']
+                port=server['port'],
+                succession_order=server['succession_order']
             )
             logging.info(' _____| Replace Default Server: ' + str(server))
 
@@ -713,7 +715,8 @@ class ServerService(rpyc.Service):
         Workers_list_Model.create(
             name=copy.deepcopy(king['name']),
             ip=copy.deepcopy(king['ip']),
-            port=copy.deepcopy(king['port'])
+            port=copy.deepcopy(king['port']),
+            succession_order=copy.deepcopy(king['succession_order'])
         )
         logging.info(' _____| Replace Worker King: ' + str(king))
         for server in copy.deepcopy(servers_list):
@@ -722,7 +725,8 @@ class ServerService(rpyc.Service):
             Workers_list_Model.create(
                 name=server['name'],
                 ip=server['ip'],
-                port=server['port']
+                port=server['port'],
+                succession_order=server['succession_order']
             )
             logging.info(' _____| Replace Worker Server: ' + str(server))
 

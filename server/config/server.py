@@ -3,7 +3,7 @@ WHO_AM_I = {
     "db-name": 'Hermes.db',
     "ip": "127.0.0.1",
     "port": 27000,
-    "order": "King"
+    "succession_order": 0
 }
 
 KING = "King"
