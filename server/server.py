@@ -7,7 +7,7 @@ import socket
 import logging
 import collections
 
-from config.server import WHO_AM_I
+from config.server import WHO_AM_I, KING
 
 import controllers.chats as ChatController
 import controllers.users as UserController
@@ -733,3 +733,15 @@ class ServerService(rpyc.Service):
                 port=server['port']
             )
             logging.info(' _____| Replace Suspects Servers: ' + str(server))
+
+    @classmethod
+    def exposed_isKing(self):
+        global KING
+        global WHO_AM_I
+        if WHO_AM_I['position'] == KING:
+            return True
+        return False
+
+    @classmethod
+    def exposed_getServerList(self):
+        return Default_list_Model.all()

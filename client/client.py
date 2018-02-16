@@ -174,20 +174,27 @@ def exitProgramWithError(errorKey):
 def startConnectWithServers():
     global SERVERCONNECTION
     global CONFIG
-    count = 0
-    while (CONFIG['connected'] is False):
-        server = CONFIG['servers'][count]
+    for server in CONFIG['servers']:
         try:
             SERVERCONNECTION = rpyc.connect(
                 server['ip'],
-                server['port'],
-                config={
-                    'allow_public_attrs': True,
-                    "allow_pickle": True
-                }
+                server['port']
             )
+            CONFIG['servers'] = copy.deepcopy(SERVERCONNECTION.root.getServerList())
+            SERVERCONNECTION.close()
+            break
+        except (socket.error, AttributeError):
+            continue
+    for server in CONFIG['servers']:
+        try:
+            SERVERCONNECTION = rpyc.connect(
+                server['ip'],
+                server['port']
+            )
+            if not SERVERCONNECTION.root.isKing():
+                continue
             CONFIG['connected'] = True
-            CONFIG['servers'][count]['status'] = LIVE_STATUS
+            server['status'] = LIVE_STATUS
             print ('+ + + + + + + + + [CONNECTION SUCCESS] + + + + + + + + +')
             print ('Server: ' + server['name'])
             print ('Status: ' + server['status'])
@@ -196,19 +203,16 @@ def startConnectWithServers():
             print ("\n\nLoad the program...")
             sleep(3)
         except (socket.error, AttributeError):
-            CONFIG['servers'][count]['status'] = DEATH_STATUS
+            server['status'] = DEATH_STATUS
             print ('+ + + + + + + + + [CONNECTION ERROR] + + + + + + + + +')
             print ('Server: ' + server['name'])
             print ('Status: ' + server['status'])
             print ('IP: ' + server['ip'])
             print ('Port:' + str(server['port']))
-            count += 1
             for i in range(3):
                 print ("- Try again in: " + str(3-i))
                 sleep(1)
                 print ('\r', end='')
-        if count >= len(CONFIG['servers']):
-            exitProgramWithError('@SERVER/NO_CONNECTION')
 # #############################################################################
 # #############################################################################
 # ############################### Group Functions #############################
@@ -221,7 +225,7 @@ def remoteGetAllUserGroups():
         data = SERVERCONNECTION.root.getAllUserGroups(
             user_id=STORE['user']['email']
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -274,7 +278,7 @@ def remoteAddUserToAGroup(group_id):
             user_id=STORE['user']['email'],
             group_id=group_id
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -321,7 +325,7 @@ def remoteCreateGroup(group_name):
             user_id=STORE['user']['email'],
             group_name=group_name
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -392,7 +396,7 @@ def remoteSendGroupMessage(group_id, message):
             group_id=group_id,
             message=message
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -433,7 +437,7 @@ def remoteGetGroupMessages(group_id):
             user_id=STORE['user']['email'],
             group_id=group_id
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError, TypeError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -563,7 +567,7 @@ def remoteGetAllUserContacts():
         data = SERVERCONNECTION.root.getAllUserContacts(
             user_id=STORE['user']['email']
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',
@@ -596,7 +600,7 @@ def remoteaddContact(contact_id):
             user_id=STORE['user']['email'],
             contact_id=contact_id
         )
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         startConnectWithServers()
         return {
@@ -925,7 +929,7 @@ def mainScreen():
 def remoteLogOnSystem(email):
     try:
         data = SERVERCONNECTION.root.userLogin(user_id=email)
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         print('+++ Erro: ')
         return {
@@ -953,7 +957,7 @@ def logIn(email):
 def remoteCreateUser(email, name):
     try:
         data = SERVERCONNECTION.root.createUser(email=email, name=name)
-        return data
+        return copy.deepcopy(data)
     except (IndexError, socket.error, AttributeError, EOFError):
         return {
             'type': 'ERROR/CONNECTION',

@@ -21,7 +21,7 @@ def create(
         VALUES (?, ?);
     """, (
             _round,
-            created_at
+            created_at,
         )
     )
     conn.commit()
