@@ -184,7 +184,7 @@ conn.commit()
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('1192.168.0.14', 'Hermes', 27001, 1);
+        VALUES ('192.168.0.14', 'Hermes', 27001, 1);
 """)
 conn.commit()
 
