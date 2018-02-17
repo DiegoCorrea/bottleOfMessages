@@ -4,9 +4,9 @@ WHO_AM_I = {
     "name": "Hermes",
     "db-name": 'Hermes.db',
     "ip": "127.0.0.1",
-    "port": 27000,
+    "port": 27001,
     "position": WORKER,
-    "succession_order": 0
+    "succession_order": 1
 }
 
 LIVE_STATUS = 'live'

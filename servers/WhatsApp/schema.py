@@ -3,7 +3,7 @@ import sys
 import os
 import inspect
 from time import gmtime, strftime
-from config.server import APP_DB_PATH, SERVER_DB_PATH
+from config.server import APP_DB_PATH, SERVER_DB_PATH, WHO_AM_I
 
 sys.path.append('..')
 
@@ -19,7 +19,14 @@ conn = sqlite3.connect(
 )
 # definindo um cursor
 cursor = conn.cursor()
-
+print(' -'*30)
+print(' + name: ', WHO_AM_I['name'])
+print(' + db-name: ', WHO_AM_I['db-name'])
+print(' + ip: ', WHO_AM_I['ip'])
+print(' + port: ', WHO_AM_I['port'])
+print(' + position: ', WHO_AM_I['position'])
+print(' + succession_order: ', WHO_AM_I['succession_order'])
+print(' -'*30)
 
 print('Deletando Tabelas se Existe')
 cursor.execute("""

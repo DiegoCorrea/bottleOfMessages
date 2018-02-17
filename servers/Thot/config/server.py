@@ -4,9 +4,9 @@ WHO_AM_I = {
     "name": "Thot",
     "db-name": 'Thot.db',
     "ip": "127.0.0.1",
-    "port": 27001,
+    "port": 27002,
     "position": WORKER,
-    "succession_order": 1
+    "succession_order": 2
 }
 
 LIVE_STATUS = 'live'
