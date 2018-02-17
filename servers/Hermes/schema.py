@@ -19,6 +19,7 @@ conn = sqlite3.connect(
 )
 # definindo um cursor
 cursor = conn.cursor()
+
 print(' -'*30)
 print(' + name: ', WHO_AM_I['name'])
 print(' + db-name: ', WHO_AM_I['db-name'])
@@ -183,21 +184,21 @@ conn.commit()
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('127.0.0.1', 'Hermes', 27000, 0);
+        VALUES ('127.0.0.1', 'Hermes', 27001, 1);
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('127.0.0.1', 'Thot', 27001, 1);
+        VALUES ('127.0.0.1', 'Thot', 27002, 2);
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('127.0.0.1', 'Exu', 27002, 2);
+        VALUES ('127.0.0.1', 'Exu', 27000, 0);
 """)
 conn.commit()
 print('...OK!')

@@ -1,4 +1,5 @@
 import sqlite3
+import logging
 import sys
 
 from time import gmtime, strftime
@@ -31,7 +32,7 @@ def create(
         )
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -49,7 +50,7 @@ def findBy_email(email):
         if data is None:
             return []
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -67,7 +68,7 @@ def findBy_ID(user_id):
         if data is None:
             return []
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -90,7 +91,7 @@ def atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []

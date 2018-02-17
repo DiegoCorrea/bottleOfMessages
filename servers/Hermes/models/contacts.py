@@ -31,7 +31,7 @@ def create(
         """, (_id, user_id, contact_id, created_at,))
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -53,7 +53,7 @@ def all(user_id):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -72,7 +72,7 @@ def findBy_ID(user_id, contact_id):
         if data is None:
             return []
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -95,7 +95,7 @@ def atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []

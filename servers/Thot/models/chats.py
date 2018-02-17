@@ -1,4 +1,5 @@
 import sqlite3
+import logging
 import uuid
 
 from time import gmtime, strftime
@@ -33,7 +34,7 @@ def createChat(
         )
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -55,7 +56,7 @@ def allUserChat(user_id):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -76,7 +77,7 @@ def getChatWith(user_id, contact_id):
         if data is None:
             return []
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -99,7 +100,7 @@ def getMessages(chat_id, limit=20):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -135,7 +136,7 @@ def sendMessage(
         )
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -158,7 +159,7 @@ def chats_atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -181,7 +182,7 @@ def messages_atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []

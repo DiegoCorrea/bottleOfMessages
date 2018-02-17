@@ -1,4 +1,5 @@
 import sqlite3
+import logging
 import uuid
 
 from time import gmtime, strftime
@@ -27,7 +28,7 @@ def create(
         conn.commit()
         conn.close()
         return _id
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -46,7 +47,7 @@ def findBy_ID(group_id):
         if data is None:
             return []
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -68,7 +69,7 @@ def allUsers(group_id):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -90,7 +91,7 @@ def userGroups(user_id):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -118,7 +119,7 @@ def addUser(
         """, (_id, user_id, group_id, created_at))
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -141,7 +142,7 @@ def getMessages(group_id, limit=20):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -177,7 +178,7 @@ def sendMessage(
         )
         conn.commit()
         conn.close()
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -200,7 +201,7 @@ def groups_atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -223,7 +224,7 @@ def usersAdd_atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
@@ -246,7 +247,7 @@ def messages_atRound(_roundStarted, _roundFinished):
         for linha in itens:
             data.append(linha)
         return data
-    except Exception as 2:
+    except Exception as e:
         logging.error(' ^^^^^ Model Error ^^^^^ ')
         logging.error('error({0}): {1}'.format(e.errno, e.strerror))
         return []
