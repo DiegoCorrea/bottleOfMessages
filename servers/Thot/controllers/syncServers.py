@@ -140,8 +140,7 @@ def youKnowMe():
                 server['port']
             )
             if SERVERCONNECTION.root.isKing():
-                t = SERVERCONNECTION.root.newWorker(server)
-                logging.info(' ===== You know me -- ' + str(t))
+                SERVERCONNECTION.root.newWorker(WHO_AM_I)
             SERVERCONNECTION.close()
         except(socket.error, AttributeError, EOFError):
             logging.error(
