@@ -1,8 +1,8 @@
 KING = "King"
 WORKER = "Worker"
 WHO_AM_I = {
-    "name": "Thot",
-    "db-name": 'Thot.db',
+    "name": "WhatsApp",
+    "db-name": 'WhatsApp.db',
     "ip": "127.0.0.1",
     "port": 27001,
     "position": WORKER,
