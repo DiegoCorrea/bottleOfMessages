@@ -135,6 +135,8 @@ def theKingIsAlive():
 def youKnowMe():
     for server in Default_list_Model.all():
         try:
+            if WHO_AM_I['name'] == server['name']:
+                continue
             SERVERCONNECTION = rpyc.connect(
                 server['ip'],
                 server['port']
