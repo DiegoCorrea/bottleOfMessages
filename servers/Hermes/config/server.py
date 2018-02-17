@@ -3,7 +3,7 @@ WORKER = "Worker"
 WHO_AM_I = {
     "name": "Hermes",
     "db-name": 'Hermes.db',
-    "ip": "192.168.0.14",
+    "ip": "192.168.0.16",
     "port": 27001,
     "position": WORKER,
     "succession_order": 1

@@ -3,7 +3,7 @@ WORKER = "Worker"
 WHO_AM_I = {
     "name": "Exu",
     "db-name": 'Exu.db',
-    "ip": "192.168.0.13",
+    "ip": "192.168.0.10",
     "port": 27000,
     "position": WORKER,
     "succession_order": 0
