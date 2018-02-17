@@ -27,6 +27,7 @@ def whoIsAlive():
     logging.info(" **************** How is Alive?")
     Workers_list_Model.clean()
     Suspects_list_Model.clean()
+    print(str(Default_list_Model.all()))
     for server in Default_list_Model.all():
         if WHO_AM_I['name'] == server['name']:
             continue
@@ -132,14 +133,15 @@ def theKingIsAlive():
 
 
 def youKnowMe():
-    for server in Workers_list_Model.all():
+    for server in Default_list_Model.all():
         try:
             SERVERCONNECTION = rpyc.connect(
                 server['ip'],
                 server['port']
             )
             if SERVERCONNECTION.root.isKing():
-                SERVERCONNECTION.root.newWorker(server)
+                t = SERVERCONNECTION.root.newWorker(server)
+                logging.info(' ===== You know me -- ' + str(t))
             SERVERCONNECTION.close()
         except(socket.error, AttributeError, EOFError):
             logging.error(

@@ -42,7 +42,7 @@ def server_Syncronization():
                 if not ServerSyncronization.theKingIsAlive():
                     ServerSyncronization.whoIsAlive()
                     ServerSyncronization.election()
-                elif diffLastRound > 4*ROUND_TIME:
+                if diffLastRound > 4*ROUND_TIME:
                     ServerSyncronization.youKnowMe()
 
 

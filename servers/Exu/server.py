@@ -752,9 +752,11 @@ class ServerService(rpyc.Service):
 
     @classmethod
     def exposed_newWorker(self, identification):
-        if len(Default_list_Model.findBy_name(
-            name=identification['name'])
-        ) > 0:
+        server = Default_list_Model.findBy_name(
+            name=identification['name']
+        )
+        logging.info(' ///////////////// ' + str(server))
+        if server['name'] == identification['name']:
             return False
         Default_list_Model.create(
             name=identification['name'],
