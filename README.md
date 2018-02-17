@@ -15,12 +15,30 @@
 
 1. Clone the project: `git@github.com:DiegoCorrea/bottleOfMessages.git`  
 
-2. Go to project path: `cd bottleOfMessages`  
+2. Go to Project path: `cd bottleOfMessages/`  
 
-3. Run the Server  
-3.1. Go to the Server path: `cd server`  
-3.2. Run the Server: `python3.6 main.py`
+3. Go to the Server path: `cd servers/`  
 
-4. Run the Client  
-4.1 Go to the Client path: ` `  
-4.2. Run the Client: `python3.6 client.py`
+4. Exu:  
+4.1. Go to Exu Server path: `cd Exu/`  
+4.2. Create a Schema: `python3.6 schema.py`  
+4.3. Run the Server: `python3.6 main.py`  
+
+4. Hermes:  
+4.1. Go to Exu Server path: `cd Hermes/`  
+4.2. Create a Schema: `python3.6 schema.py`  
+4.3. Run the Server: `python3.6 main.py`  
+
+4. Thot:  
+4.1. Go to Exu Server path: `cd Thot/`  
+4.2. Create a Schema: `python3.6 schema.py`  
+4.3. Run the Server: `python3.6 main.py`  
+
+4. WhatsApp:  
+4.1. Go to Exu Server path: `cd WhatsApp/`  
+4.2. Create a Schema: `python3.6 schema.py`  
+4.3. Run the Server: `python3.6 main.py`  
+
+6. Run the Client  
+4.1 Go to the Client path: `cd client/`  
+4.2. Run the Client: `python3.6 client.py`  

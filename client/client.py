@@ -53,7 +53,7 @@ def readGroupIDFromKey():
             inText = input("Group Code: ")
         except KeyboardInterrupt:
             exitProgramWithSuccess()
-        except (NameError, SyntaxError):
+        except (NameError, SyntaxError, ValueError):
             print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
             print ('\tMessage: Wrong Input, try again!')
             inText = ''
@@ -67,7 +67,7 @@ def readNameFromKey():
             inText = input("Name: ")
         except KeyboardInterrupt:
             exitProgramWithSuccess()
-        except (NameError, SyntaxError):
+        except (NameError, SyntaxError, ValueError):
             print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
             print ('\tMessage: Wrong Input, try again!')
             inText = ''
@@ -85,7 +85,7 @@ def readEmailFromKey():
                 inText == ''
         except KeyboardInterrupt:
             exitProgramWithSuccess()
-        except (NameError, SyntaxError):
+        except (NameError, SyntaxError, ValueError):
             print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
             print ('\tMessage: Wrong Input, try again!')
             inText = ''
@@ -98,7 +98,7 @@ def readMenuChoiceFromKey():
         return inText
     except KeyboardInterrupt:
         exitProgramWithSuccess()
-    except (NameError, SyntaxError):
+    except (NameError, SyntaxError, ValueError):
         print ('+ + + + + + + + + + [Messages] + + + + + + + + + +')
         print ('\tMessage: Wrong Input, try again!')
         waitEnter()
