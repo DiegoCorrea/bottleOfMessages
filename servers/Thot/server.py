@@ -743,6 +743,14 @@ class ServerService(rpyc.Service):
         return Default_list_Model.all()
 
     @classmethod
+    def exposed_serverOnList(self, identification):
+        if len(Default_list_Model.findBy_name(
+            name=identification['name']
+        )) > 0:
+            return True
+        return False
+
+    @classmethod
     def exposed_newWorker(self, identification):
         if len(Default_list_Model.findBy_name(
             name=identification['name'])

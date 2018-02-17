@@ -129,3 +129,22 @@ def theKingIsAlive():
             '+ + + + + + + + [THE FIRST KING] + + + + + + + +'
         )
         return False
+
+
+def youKnowMe():
+    for server in Workers_list_Model.all():
+        try:
+            SERVERCONNECTION = rpyc.connect(
+                server['ip'],
+                server['port']
+            )
+            if SERVERCONNECTION.root.isKing():
+                SERVERCONNECTION.root.newWorker(server)
+            SERVERCONNECTION.close()
+        except(socket.error, AttributeError, EOFError):
+            logging.error(
+                '+ + + + + + + + [] + + + + + + + +'
+            )
+            logging.error('Server: ' + server['name'])
+            logging.error('IP: ' + server['ip'])
+            logging.error('Port:' + str(server['port']))
