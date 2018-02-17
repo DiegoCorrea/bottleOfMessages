@@ -22,18 +22,18 @@ CONFIG = {
     'servers': [
         {
             'status': '',
-            'name': 'Hermes',
-            'ip': '127.0.0.1',
+            'name': 'Exu',
+            'ip': '192.168.0.13',
             'port': 27000
         }, {
             'status': '',
-            'name': 'Thot',
-            'ip': '127.0.0.1',
+            'name': 'Hermes',
+            'ip': '192.168.0.14',
             'port': 27001
         }, {
             'status': '',
-            'name': 'Exu',
-            'ip': '127.0.0.1',
+            'name': 'Thot',
+            'ip': '192.168.0.14',
             'port': 27002
         }
     ]

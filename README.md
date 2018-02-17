@@ -23,22 +23,31 @@
 4.1. Go to Exu Server path: `cd Exu/`  
 4.2. Create a Schema: `python3.6 schema.py`  
 4.3. Run the Server: `python3.6 main.py`  
+4.4. To edit server configs, go to file `config/server.py`. And chegan HOW_AM_I configuration  
+4.5. For change the Default Servers Know, go to `schema.py` and locate the INSERT line 184, 191 and 198. And change the configuration for the Default Know servers  
 
 4. Hermes:  
 4.1. Go to Exu Server path: `cd Hermes/`  
 4.2. Create a Schema: `python3.6 schema.py`  
 4.3. Run the Server: `python3.6 main.py`  
+4.4. To edit server configs, go to file `config/server.py`. And chegan HOW_AM_I configuration  
+4.5. For change the Default Servers Know, go to `schema.py` and locate the INSERT line 184, 191 and 198. And change the configuration for the Default Know servers  
 
 4. Thot:  
-4.1. Go to Exu Server path: `cd Thot/`  
+4.1. Go to Thot Server path: `cd Thot/`  
 4.2. Create a Schema: `python3.6 schema.py`  
 4.3. Run the Server: `python3.6 main.py`  
+4.4. To edit server configs, go to file `config/server.py`. And chegan HOW_AM_I configuration  
+4.5. For change the Default Servers Know, go to `schema.py` and locate the INSERT line 184, 191 and 198. And change the configuration for the Default Know servers  
 
 4. WhatsApp:  
-4.1. Go to Exu Server path: `cd WhatsApp/`  
+4.1. Go to WhatsApp Server path: `cd WhatsApp/`  
 4.2. Create a Schema: `python3.6 schema.py`  
 4.3. Run the Server: `python3.6 main.py`  
+4.4. To edit server configs, go to file `config/server.py`. And chegan HOW_AM_I configuration  
+4.5. For change the Default Servers Know, go to `schema.py` and locate the INSERT line 184, 191 and 198. And change the configuration for the Default Know servers  
 
-6. Run the Client  
-4.1 Go to the Client path: `cd client/`  
-4.2. Run the Client: `python3.6 client.py`  
+5. Run the Client  
+5.1. Go to the Client path: `cd client/`  
+5.3. Open the `client.py`, locate the servers configuration on line 22, and edit the name, ip and port, to servers configuration
+5.3. Run the Client: `python3.6 client.py`  
