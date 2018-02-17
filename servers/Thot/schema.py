@@ -184,21 +184,21 @@ conn.commit()
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('192.168.0.14', 'Hermes', 27001, 1);
+        VALUES ('192.168.0.16', 'Hermes', 27001, 1);
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('192.168.0.15', 'Thot', 27002, 2);
+        VALUES ('192.168.0.17', 'Thot', 27002, 2);
 """)
 conn.commit()
 
 cursor.execute("""
     INSERT INTO default_servers_list
         (ip, name, port, succession_order)
-        VALUES ('192.168.0.13', 'Exu', 27000, 0);
+        VALUES ('192.168.0.10', 'Exu', 27000, 0);
 """)
 conn.commit()
 print('...OK!')
